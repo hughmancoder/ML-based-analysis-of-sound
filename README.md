@@ -17,19 +17,23 @@ source .venv/bin/activate   # On Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
+or use the provided `Makefile`:
 ### 2. Running project
 
-```
-python scripts/extract_audio.py data/raw/Film1.mp4 --out_dir data/interim --sr 22050
+refer to the make file for command lines
+
+```bash
+# Extract audio from films
+make generate_spectrogram
 ```
 
 ## TODO
 
-- [ ] Extracting audio from film files
 - [x] Convert to spectrograms
+- [ ] Extracting audio from film files
 - [ ] Add more sound files to the dataset
+- [ ] Setup single instrument classification CNN
 - [ ] Train CNN to classify 11 instruments
-
 
 ## Goals
 

@@ -14,7 +14,7 @@ install:
 	. .venv/bin/activate && pip install -r requirements.txt
 
 # Convert a WAV into a spectrogram image (mel, 3-channel)
-specs:
+generate_spectrogram:
 	$(PY) scripts/to_spectrogram.py $(WAV) $(PNG) \
 		--spec mel --mode stereo3 --sr 22050 \
 		--win_ms 30 --hop_ms 10 --window boxcar \
