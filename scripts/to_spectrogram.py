@@ -1,83 +1,111 @@
 #!/usr/bin/env python3
-import argparse, pathlib
+from __future__ import annotations
+import argparse
 import numpy as np
 from PIL import Image
-import librosa
+from pathlib import Path
+import sys
+sys.path.append(str(Path(__file__).resolve().parents[1]))  # project root so 'src' is importable
 
-def mel_db(y, sr, n_fft, win_ms, hop_ms, window, n_mels, top_db):
-    S = librosa.feature.melspectrogram(
-        y=y, sr=sr, n_fft=n_fft,
-        win_length=int(sr*win_ms/1000),
-        hop_length=int(sr*hop_ms/1000),
-        window=window, n_mels=n_mels, power=2.0, center=True,
-    )
-    return librosa.power_to_db(S, ref=np.max, top_db=top_db)
+from src.audio.features import (
+    is_audio, load_audio_stereo, ensure_duration, calc_fft_hop, expected_frames,
+    mel_mono_from_stereo, mel_stereo3_from_stereo, norm01
+)
 
-def stft_db(y, sr, n_fft, win_ms, hop_ms, window, top_db):
-    D = librosa.stft(
-        y=y, n_fft=n_fft,
-        win_length=int(sr*win_ms/1000),
-        hop_length=int(sr*hop_ms/1000),
-        window=window, center=True,
-    )
-    S = np.abs(D)**2
-    return librosa.power_to_db(S, ref=np.max, top_db=top_db)
+# ---------- image save ----------
+def ensure_parent(path: Path):
+    path.parent.mkdir(parents=True, exist_ok=True)
 
-def to_png(chw, out_path, size):
-    out_path.parent.mkdir(parents=True, exist_ok=True)   # ensure dir exists
-    vmin, vmax = float(chw.min()), float(chw.max())
-    x = (255.0*(chw - vmin)/(vmax - vmin + 1e-8)).astype(np.uint8)
-    img = np.transpose(x, (1, 2, 0))  # H, W, C
-    Image.fromarray(img).resize((size, size), resample=Image.BICUBIC).save(out_path)
+def save_png(arr: np.ndarray, out_path: Path, img_size: int | None):
+    ensure_parent(out_path)
+    if arr.ndim == 2:       # (H,W)
+        img = (255 * norm01(arr)).astype(np.uint8)
+        pil = Image.fromarray(img, mode="L")
+    elif arr.ndim == 3:     # (C,H,W) => choose (H,W) or map channels
+        if arr.shape[0] == 1:          # mono mel
+            img = (255 * norm01(arr[0])).astype(np.uint8)
+            pil = Image.fromarray(img, mode="L")
+        elif arr.shape[0] == 3:        # stereo3
+            # convert (3,H,W) -> (H,W,3)
+            rgb = np.transpose(arr, (1, 2, 0))
+            img = (255 * norm01(rgb)).astype(np.uint8)
+            pil = Image.fromarray(img, mode="RGB")
+        else:
+            raise ValueError("Expected channels 1 or 3 for image export")
+    else:
+        raise ValueError("Expected 2D or 3D array")
+    if img_size is not None:
+        pil = pil.resize((img_size, img_size), Image.BICUBIC)
+    pil.save(out_path)
+
+# ---------- core ----------
+def mel_from_file(in_file: Path, out_png: Path, args):
+    stereo = load_audio_stereo(in_file, args.sr)                  # (C,T)
+    stereo = ensure_duration(stereo, args.sr, args.duration_s)    # exact length
+    n_fft, hop = calc_fft_hop(args.sr, args.win_ms, args.hop_ms)
+    fmax = args.fmax if args.fmax is not None else args.sr / 2.0
+
+    if args.mode == "mono":
+        mel = mel_mono_from_stereo(stereo, args.sr, n_fft, hop, args.n_mels, args.fmin, fmax)  # (1,H,W)
+    elif args.mode == "stereo3":
+        mel = mel_stereo3_from_stereo(stereo, args.sr, n_fft, hop, args.n_mels, args.fmin, fmax)  # (3,H,W)
+    else:
+        raise ValueError("mode must be 'mono' or 'stereo3'")
+
+    save_png(mel, out_png, args.img_size)
+    if args.save_npy:
+        np.save(out_png.with_suffix(".npy"), mel.astype(np.float32))
+
+    if args.verbose:
+        print(f"[mel] {in_file} -> {out_png}")
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("audio", help="Input audio (.wav/.mp3/.flac)")
-    ap.add_argument("out_png", help="Output PNG")
-    ap.add_argument("--spec", choices=["mel","stft"], default="mel")
-    ap.add_argument("--mode", choices=["mono","stereo3"], default="stereo3")
+    ap.add_argument("input", type=Path, help="Audio file OR directory")
+    ap.add_argument("output", type=Path,
+                    help="If file: PNG path or directory; If dir: output root directory.")
+    ap.add_argument("--mode", choices=["mono", "stereo3"], default="stereo3")
     ap.add_argument("--sr", type=int, default=22050)
+    ap.add_argument("--duration_s", type=float, default=3.0)          # <— add duration to match dataset
     ap.add_argument("--win_ms", type=float, default=30.0)
     ap.add_argument("--hop_ms", type=float, default=10.0)
-    ap.add_argument("--n_fft", type=int, default=1024)
-    ap.add_argument("--window", default="boxcar")  # or "hann"
     ap.add_argument("--n_mels", type=int, default=128)
-    ap.add_argument("--top_db", type=float, default=80.0)
+    ap.add_argument("--fmin", type=float, default=30.0)
+    ap.add_argument("--fmax", type=float, default=None)
     ap.add_argument("--img_size", type=int, default=224)
+    ap.add_argument("--save_npy", action="store_true")
+    ap.add_argument("--recursive", action="store_true")
+    ap.add_argument("--verbose", action="store_true")
     args = ap.parse_args()
 
-    out_path = pathlib.Path(args.out_png)
+    inp = args.input.resolve()
+    out = args.output.resolve()
 
-    # Robust loader: handles MP3/WAV/FLAC. mono=False keeps channels.
-    y, sr = librosa.load(args.audio, sr=args.sr, mono=False)
-    # librosa returns shape [n] for mono, [channels, n] for multi
-    if y.ndim == 1:
-        y = np.stack([y, y], axis=0)  # duplicate for "stereo"
-    else:
-        # ensure 2 channels by duplicating the first if needed
-        if y.shape[0] == 1:
-            y = np.vstack([y, y])
+    if inp.is_file():
+        out_png = out if out.suffix.lower() == ".png" else (out / (inp.stem + ".png"))
+        mel_from_file(inp, out_png, args)
+        return
 
-    if args.spec == "stft":
-        y_mono = y.mean(axis=0)
-        S_db = stft_db(y_mono, sr, args.n_fft, args.win_ms, args.hop_ms, args.window, args.top_db)
-        chw = np.expand_dims(S_db, 0)  # [1, F, T]
-    else:
-        if args.mode == "mono":
-            y_mono = y.mean(axis=0)
-            M_db = mel_db(y_mono, sr, args.n_fft, args.win_ms, args.hop_ms, args.window, args.n_mels, args.top_db)
-            chw = np.expand_dims(M_db, 0)
-        else:
-            L_db = mel_db(y[0], sr, args.n_fft, args.win_ms, args.hop_ms, args.window, args.n_mels, args.top_db)
-            R_db = mel_db(y[1], sr, args.n_fft, args.win_ms, args.hop_ms, args.window, args.n_mels, args.top_db)
-            mean_db = 0.5*(L_db + R_db)
-            Delta = librosa.feature.delta(mean_db)
-            chw = np.stack([L_db, R_db, Delta], axis=0)  # [3, mel, T]
+    if inp.is_dir():
+        if out.suffix.lower() == ".png":
+            print("When input is a directory, output must be a directory.", file=sys.stderr)
+            sys.exit(1)
 
-    if chw.shape[0] == 1:
-        chw = np.repeat(chw, 3, axis=0)  # tile to 3 channels for VGG
-    to_png(chw, out_path, args.img_size)
-    print(f"Saved {args.spec.upper()} spectrogram → {out_path}")
+        files = [p for p in (inp.rglob("*") if args.recursive else inp.iterdir())
+                 if p.is_file() and is_audio(p)]
+        if not files:
+            print("No audio files found.", file=sys.stderr)
+            sys.exit(1)
+
+        for f in files:
+            rel_parent = f.parent.relative_to(inp)
+            out_dir = out / rel_parent
+            out_png = out_dir / (f.stem + ".png")
+            mel_from_file(f, out_png, args)
+        return
+
+    print("Input path does not exist.", file=sys.stderr)
+    sys.exit(1)
 
 if __name__ == "__main__":
     main()

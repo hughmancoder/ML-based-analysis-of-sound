@@ -1,5 +1,9 @@
 .DS_Store
 
+# Data
+standardized_wav/
+mel_spectrogram/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]

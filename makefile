@@ -1,27 +1,34 @@
-PY=python
-# Data paths
-# WAV=data/interim/Film1.wav
-# PNG=data/processed/specs/Film1.png
-WAV = data/Strings/mandolin/mandolin_A3_very-long_forte_tremolo.mp3
-PNG = data/processed/mandolin_A3_very-long_forte_tremolo.png
+PY ?= python
 
-.PHONY: venv install extract specs train infer clean
+DATA_ROOT := data
+AUDIO_ROOT := $(DATA_ROOT)
+PREP_ROOT  := $(DATA_ROOT)/standardized_wav
+SPEC_ROOT  := $(DATA_ROOT)/mel_spectrogram
 
-venv:
-	python -m venv .venv
+SR_AUDIO   := 44100
+CLIP_SEC   := 3.0
+
+SR         ?= 44100
+DURATION_S ?= 3.0
+WIN_MS     ?= 30
+HOP_MS     ?= 10
+N_MELS     ?= 128
+FMIN       ?= 30
+IMG_SIZE   ?= 224
+SAVE_NPY   ?=
+
+.PHONY: install preprocess_all specs
 
 install:
 	. .venv/bin/activate && pip install -r requirements.txt
 
-# Convert a WAV into a spectrogram image (mel, 3-channel)
-generate_spectrogram:
-	$(PY) scripts/to_spectrogram.py $(WAV) $(PNG) \
-		--spec mel --mode stereo3 --sr 22050 \
-		--win_ms 30 --hop_ms 10 --window boxcar \
-		--n_mels 128 --img_size 224
+preprocess_all:
+	$(PY) scripts/standardize_wav.py "$(AUDIO_ROOT)" "$(PREP_ROOT)" \
+		--sr $(SR_AUDIO) --duration_s $(CLIP_SEC) --recursive --verbose
 
-# extract:
-# 	$(PY) scripts/extract_audio.py data/raw/Film1.mp4 --out_dir data/interim --sr 22050
-
-# clean:
-# 	rm -rf checkpoints *.png
+specs: preprocess_all
+	$(PY) scripts/to_spectrogram.py "$(PREP_ROOT)" "$(SPEC_ROOT)" \
+		--mode stereo3 --sr $(SR) --duration_s $(DURATION_S) \
+		--win_ms $(WIN_MS) --hop_ms $(HOP_MS) \
+		--n_mels $(N_MELS) --fmin $(FMIN) --img_size $(IMG_SIZE) \
+		--recursive $(SAVE_NPY) --verbose

@@ -12,28 +12,26 @@
 # Create virtual environment
 python -m venv .venv
 source .venv/bin/activate   # On Windows: .venv\Scripts\activate
-
 # Install dependencies
 pip install -r requirements.txt
 ```
 
 or use the provided `Makefile`:
+
 ### 2. Running project
 
 refer to the make file for command lines
 
 ```bash
-# Extract audio from films
-make generate_spectrogram
+# 3) Generate spectrograms for all files (recursively):
+make specs            # stereo3 by default (L, R, Mean -> 3-channel PNGs)
+
+#    or strictly mono:
+make specs_mono
+
+# 4) One file only (uses FILENAME in Makefile):
+make generate_one
 ```
-
-## TODO
-
-- [x] Convert to spectrograms
-- [ ] Extracting audio from film files
-- [ ] Add more sound files to the dataset
-- [ ] Setup single instrument classification CNN
-- [ ] Train CNN to classify 11 instruments
 
 ## Goals
 
@@ -42,3 +40,19 @@ make generate_spectrogram
 - Generate FFT/Mel spectrograms (square/boxcar window baseline; Hann optional)
 - VGG-based CNN (transfer learning) for 11 instrument classes
 - Prototype spectrogram generator + full train/infer pipeline
+
+## Libraries
+
+[librosa](https://librosa.org/doc/latest/index.html)  for audio processing
+
+## Resources
+
+[paper respository](https://github.com/dhing1024/cs230-instrument-audio-ai)
+
+## Structure suggestions
+
+[template example](https://github.com/victoresque/pytorch-template)
+
+## Extensions
+
+- [ ] Mel + Δ + ΔΔ 3-channel spectrograms
