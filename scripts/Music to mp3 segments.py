@@ -2,7 +2,7 @@ from pydub import AudioSegment
 from pydub.utils import which
 import math
 import os
-from tqdm import tqdm   # <-- 新增
+from tqdm import tqdm   
 
 # Explicitly tell pydub where ffmpeg and ffprobe are
 AudioSegment.converter = which("ffmpeg")
