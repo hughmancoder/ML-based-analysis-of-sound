@@ -32,3 +32,6 @@ specs: preprocess_all
 		--win_ms $(WIN_MS) --hop_ms $(HOP_MS) \
 		--n_mels $(N_MELS) --fmin $(FMIN) --img_size $(IMG_SIZE) \
 		--recursive $(SAVE_NPY) --verbose
+
+extract_data:
+	python data/scripts/video_to_wav_clips.py --json data/manifests/chinese_instruments.json

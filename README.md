@@ -53,6 +53,6 @@ make generate_one
 
 [template example](https://github.com/victoresque/pytorch-template)
 
-## Extensions
+## IRMAS
 
-- [ ] Mel + Δ + ΔΔ 3-channel spectrograms
+Specs: 44.1 kHz, 3.0 s 16 bit stereo WAV

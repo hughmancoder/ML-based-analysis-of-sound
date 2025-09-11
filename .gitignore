@@ -1,4 +1,5 @@
 .DS_Store
+archive/ # throwaway files
 
 # Data
 standardized_wav/
