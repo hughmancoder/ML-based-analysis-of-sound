@@ -22,17 +22,23 @@ SAVE_NPY   ?=
 install:
 	. .venv/bin/activate && pip install -r requirements.txt
 
-# TODO
-preprocess_all:
-	$(PY) scripts/standardize_wav.py "$(AUDIO_ROOT)" "$(PREP_ROOT)" \
-		--sr $(SR_AUDIO) --duration_s $(CLIP_SEC) --recursive --verbose
-
-specs: preprocess_all
-	$(PY) scripts/to_spectrogram.py "$(PREP_ROOT)" "$(SPEC_ROOT)" \
-		--mode stereo3 --sr $(SR) --duration_s $(DURATION_S) \
-		--win_ms $(WIN_MS) --hop_ms $(HOP_MS) \
-		--n_mels $(N_MELS) --fmin $(FMIN) --img_size $(IMG_SIZE) \
-		--recursive $(SAVE_NPY) --verbose
-
-extract_data:
+extract_chinese_instruments:
 	python data/scripts/video_to_wav_clips.py --json data/manifests/chinese_instruments.json
+
+extract_gong_data:
+	python data/scripts/video_to_wav_clips.py --json data/manifests/gong.json --overwrite
+
+
+
+
+# TODO
+# preprocess_all:
+# 	$(PY) scripts/standardize_wav.py "$(AUDIO_ROOT)" "$(PREP_ROOT)" \
+# 		--sr $(SR_AUDIO) --duration_s $(CLIP_SEC) --recursive --verbose
+
+# specs: preprocess_all
+# 	$(PY) scripts/to_spectrogram.py "$(PREP_ROOT)" "$(SPEC_ROOT)" \
+# 		--mode stereo3 --sr $(SR) --duration_s $(DURATION_S) \
+# 		--win_ms $(WIN_MS) --hop_ms $(HOP_MS) \
+# 		--n_mels $(N_MELS) --fmin $(FMIN) --img_size $(IMG_SIZE) \
+# 		--recursive $(SAVE_NPY) --verbose

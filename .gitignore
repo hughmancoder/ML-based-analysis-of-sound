@@ -1,9 +1,12 @@
 .DS_Store
-archive/ # throwaway files
+
+# throwaway files
+archive/ 
 
 # Data
 standardized_wav/
 mel_spectrogram/
+IRMAS/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

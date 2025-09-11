@@ -1,14 +1,8 @@
 [
-  {
+    {
     "video": "https://www.youtube.com/watch?v=mL2r6E1E7sM",
     "label": "gong",
-    "description": "Traditional gong performance",
-    "clips": [[0.18, 2.05]]
-  },
-  {
-    "video": "https://www.youtube.com/watch?v=mL2r6E1E7sM",
-    "label": "dizi",
-    "description": "Traditional gong performance",
-    "clips": [[0.18, 2.05]]
+    "description": "Symphonic Gong played by Paiste Gong Master Sven",
+    "clips": [[0.18, 2.05],[3.23,3.26]]
   }
 ]

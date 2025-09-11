@@ -6,12 +6,22 @@
 
 ## How to run
 
+*## Prequisites
+Make sure the following are installed on your machine:
+- git, python, pip, make
+
 ### 1. Setup environment
 
 ```bash
 # Create virtual environment
 python -m venv .venv
-source .venv/bin/activate   # On Windows: .venv\Scripts\activate
+
+# On Linux/Mac:
+source .venv/bin/activate   
+
+# On Windows: 
+.venv\Scripts\activate
+
 # Install dependencies
 pip install -r requirements.txt
 ```
@@ -23,24 +33,9 @@ or use the provided `Makefile`:
 refer to the make file for command lines
 
 ```bash
-# 3) Generate spectrograms for all files (recursively):
-make specs            # stereo3 by default (L, R, Mean -> 3-channel PNGs)
+make extract_data # generates dataset from video files
 
-#    or strictly mono:
-make specs_mono
-
-# 4) One file only (uses FILENAME in Makefile):
-make generate_one
 ```
-
-## Goals
-
-- Extract audio from 3 target films.
-- Segment into ~30 ms windows (quasi-stationary).
-- Generate FFT/Mel spectrograms (square/boxcar window baseline; Hann optional)
-- VGG-based CNN (transfer learning) for 11 instrument classes
-- Prototype spectrogram generator + full train/infer pipeline
-
 ## Libraries
 
 [librosa](https://librosa.org/doc/latest/index.html)  for audio processing
@@ -55,4 +50,5 @@ make generate_one
 
 ## IRMAS
 
+[Data set can be found here](https://zenodo.org/records/1290750#.WzCwSRyxXMU)
 Specs: 44.1 kHz, 3.0 s 16 bit stereo WAV

@@ -5,3 +5,4 @@ soundfile>=0.12
 audioread>=3.0
 pillow>=10.0
 tqdm
+ffmpeg-python>=0.2
