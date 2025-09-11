@@ -24,9 +24,9 @@ from pathlib import Path
 from typing import List, Dict, Any
 
 # ---- Hardcoded constants ----
-OUT_ROOT = Path("data/instruments")
+OUT_ROOT = Path("data/chinese_instruments")
 TMP_DIR  = Path(".cache/video_tmp")
-METADATA_CSV = Path("data/instruments/metadata.csv")
+METADATA_CSV = Path("data/chinese_instruments/metadata.csv")
 SR = 44_100
 CHANNELS = 2
 CLIP_SECONDS = 3.0
