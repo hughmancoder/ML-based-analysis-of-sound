@@ -22,6 +22,7 @@ SAVE_NPY   ?=
 install:
 	. .venv/bin/activate && pip install -r requirements.txt
 
+# TODO
 preprocess_all:
 	$(PY) scripts/standardize_wav.py "$(AUDIO_ROOT)" "$(PREP_ROOT)" \
 		--sr $(SR_AUDIO) --duration_s $(CLIP_SEC) --recursive --verbose

@@ -1,6 +1,7 @@
 ## TODO
 
 - [x] Convert to spectrograms
+- [x] Extraction script for IRMAS wav from video files 
 - [ ] Normalise Spectrograms
 - [ ] Ensure hannmming widnow parameter is applied
 - [ ] Fix bug with 2 channel spectrograms settings png to black 
