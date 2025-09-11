@@ -1,0 +1,20 @@
+[
+    {
+    "file": "data/video_clips/gong/gong-48741.mp3",
+    "label": "gong",
+    "description": "long gong",
+    "clips": []
+    },
+    {
+    "file": "/Users/hughsignoriello/Developer/ML-based-analysis-of-sound/data/video_clips/gong/old-zildjian-gong-quite-natural-34294.mp3",
+    "label": "gong",
+    "description": "old zildjian gong",
+    "clips": []
+    },
+    {
+    "video": "https://www.youtube.com/watch?v=mL2r6E1E7sM",
+    "label": "gong",
+    "description": "Traditional gong performance",
+    "clips": [[0.18, 2.05]]
+    }
+]
