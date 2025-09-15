@@ -28,8 +28,18 @@ extract_chinese_instruments:
 extract_gong_data:
 	python data/scripts/video_to_wav_clips.py --json data/manifests/gong.json --overwrite
 
+# Precompue
+# make specs DATASET=IRMAS
+# make specs DATASET=chinese_instruments
 
+# Train on IRMAS (11 classes)
+# python train.py --train_csv data/manifests/irmas_train.csv \
+#                 --val_csv   data/manifests/irmas_val.csv \
+#                 --labels irmas --cache data/mel_cache_irmas \
+#                 --epochs 20 --batch_size 64 --ckpt irmas_cnn.pt
 
+# Fine-tune to 4 Chinese instruments
+# python finetune_cn.py
 
 # TODO
 # preprocess_all:

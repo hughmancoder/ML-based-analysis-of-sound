@@ -1,8 +1,11 @@
 librosa>=0.10
-matplotlib>=3.8
-numpy>=1.26
 soundfile>=0.12
 audioread>=3.0
+scipy>=1.11
+numpy>=1.26
+matplotlib>=3.8
 pillow>=10.0
-tqdm
+tqdm>=4.65
+torch>=2.0
+torchaudio>=2.0
 ffmpeg-python>=0.2

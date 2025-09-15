@@ -8,6 +8,7 @@
 
 *## Prequisites
 Make sure the following are installed on your machine:
+
 - git, python, pip, make
 
 ### 1. Setup environment

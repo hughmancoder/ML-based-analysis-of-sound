@@ -6,7 +6,7 @@ Hardcoded IRMAS spec:
 - Stereo (2 ch), 44_100 Hz
 - 3.0 s clip length (non-overlapping, NO padding)
 - Output: data/instruments/<label>/<video_id>/rng_<start>_<end>/tXXXXXXms.wav
-- Metadata CSV: data/instruments/metadata.csv
+- Metadata CSV: data/instruments/chinese_instruments.csv
 
 Usage:
     python data/scripts/video_to_wav_clips.py --json data/manifests/manifest_data.json
@@ -37,7 +37,7 @@ from typing import List, Dict, Any, Set
 OUT_ROOT = Path("data/chinese_instruments")
 TMP_DIR  = Path(".cache/video_tmp")
 CANON_DIR = Path(".cache/canonical")
-METADATA_CSV = Path("data/chinese_instruments/metadata.csv")
+METADATA_CSV = Path("data/chinese_instruments/chinese_instruments.csv")
 SR = 44_100
 CHANNELS = 2
 CLIP_SECONDS = 3.0
