@@ -9,3 +9,4 @@ tqdm>=4.65
 torch>=2.0
 torchaudio>=2.0
 ffmpeg-python>=0.2
+pandas>=2.0

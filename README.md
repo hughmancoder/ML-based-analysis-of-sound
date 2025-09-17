@@ -2,16 +2,16 @@
 
 ## Machine Learning-Based Analysis of Music and Sound in Martial Arts Films
 
+[Project Board](https://github.com/users/hughmancoder/projects/4)
+
 ## Setup
 
-## How to run
+Install prequisites on your machine
 
-*## Prequisites
-Make sure the following are installed on your machine:
+`git, python3, pip, make`
 
-- git, python, pip, make
 
-### 1. Setup environment
+### Setup environment
 
 ```bash
 # Create virtual environment
@@ -20,36 +20,26 @@ python -m venv .venv
 # On Linux/Mac:
 source .venv/bin/activate   
 
-# On Windows: 
-.venv\Scripts\activate
+# On Windows (cmd.exe)
+.venv\Scripts\activate.bat
+
+# On Windows (PowerShell)
+. .venv\Scripts\Activate.ps1
 
 # Install dependencies
 pip install -r requirements.txt
 ```
 
-or use the provided `Makefile`:
+Activate environment (venv) on every new terminal 
 
-### 2. Running project
+### Run the project
 
 refer to the make file for command lines
 
 ```bash
 make extract_data # generates dataset from video files
-
 ```
-## Libraries
-
-[librosa](https://librosa.org/doc/latest/index.html)  for audio processing
 
 ## Resources
 
 [paper respository](https://github.com/dhing1024/cs230-instrument-audio-ai)
-
-## Structure suggestions
-
-[template example](https://github.com/victoresque/pytorch-template)
-
-## IRMAS
-
-[Data set can be found here](https://zenodo.org/records/1290750#.WzCwSRyxXMU)
-Specs: 44.1 kHz, 3.0 s 16 bit stereo WAV

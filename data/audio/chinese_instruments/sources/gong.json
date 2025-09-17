@@ -1,0 +1,13 @@
+[
+  { 
+    "file": "/Users/hughsignoriello/Developer/ML-based-analysis-of-sound/data/audio/chinese_instruments/video_clips/gong/old_gong_natural.mp3",
+    "labels": ["gong"],
+    "time_stamps_to_extract": [],
+    "description": ""
+  },
+  { "video": "https://www.youtube.com/watch?v=mL2r6E1E7sM",
+    "labels": ["gong"],
+    "time_stamps_to_extract": [["0:18", "2:05"]],
+    "description": ""
+  }
+]

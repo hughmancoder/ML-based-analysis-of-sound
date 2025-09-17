@@ -4,8 +4,7 @@
 archive/ 
 
 # Data
-standardized_wav/
-mel_spectrogram/
+mels/
 IRMAS/
 
 # Byte-compiled / optimized / DLL files

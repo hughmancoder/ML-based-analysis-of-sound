@@ -1,54 +1,52 @@
-PY ?= python
+IRMAS_DIR := data/audio/IRMAS/IRMAS-TrainingData
+CHINESE_DIR := data/audio/chinese_instruments
+MANIFESTS := data/manifests
+CACHE := .cache
 
-DATA_ROOT := data
-AUDIO_ROOT := $(DATA_ROOT)
-PREP_ROOT  := $(DATA_ROOT)/standardized_wav
-SPEC_ROOT  := $(DATA_ROOT)/mel_spectrogram
+SR := 44100
+DUR := 3.0
+N_MELS := 128
+WIN_MS := 30.0
+HOP_MS := 10.0
+BATCH := 64
+WORKERS := 8
 
-SR_AUDIO   := 44100
-CLIP_SEC   := 3.0
+.PHONY: manifests specs_irmas specs_chinese train_irmas clean_cache
 
-SR         ?= 44100
-DURATION_S ?= 3.0
-WIN_MS     ?= 30
-HOP_MS     ?= 10
-N_MELS     ?= 128
-FMIN       ?= 30
-IMG_SIZE   ?= 224
-SAVE_NPY   ?=
+# Data Generation
+generate_gong_dataset:
+	python data/scripts/generate_data_from_json.py --input data/audio/chinese_instruments/sources/gong.json
 
-.PHONY: install preprocess_all specs
+generate_dizi_dataset:
+	python data/scripts/generate_data_from_json.py --input data/audio/chinese_instruments/sources/dizi.json
 
-install:
-	. .venv/bin/activate && pip install -r requirements.txt
+# NOTE: use with caution
+generate_all_datasets: 
+	generate_gong_dataset
+	generate_dizi_dataset
 
-extract_chinese_instruments:
-	python data/scripts/video_to_wav_clips.py --json data/manifests/chinese_instruments.json
+summarise_data:
+	python data/scripts/summarise_data.py --root $(CHINESE_DIR) 
 
-extract_gong_data:
-	python data/scripts/video_to_wav_clips.py --json data/manifests/gong.json --overwrite
+# Preprocessing
+manifests:
+	python data/scripts/generate_manifests.py --irmas_dir $(IRMAS_DIR) --chinese_dir $(CHINESE_DIR) --out_dir $(MANIFESTS)
 
-# Precompue
-# make specs DATASET=IRMAS
-# make specs DATASET=chinese_instruments
+# generates mel-spectrograms from irmas
+specs_irmas: manifests
+	python data/scripts/precache_mels.py --manifest_csv $(MANIFESTS)/irmas_all.csv \
+		--cache_root $(CACHE)/mels_irmas \
+		--batch_size $(BATCH) --workers $(WORKERS) \
+		--sr $(SR) --dur $(DUR) --n_mels $(N_MELS) --win_ms $(WIN_MS) --hop_ms $(HOP_MS)
 
-# Train on IRMAS (11 classes)
-# python train.py --train_csv data/manifests/irmas_train.csv \
-#                 --val_csv   data/manifests/irmas_val.csv \
-#                 --labels irmas --cache data/mel_cache_irmas \
-#                 --epochs 20 --batch_size 64 --ckpt irmas_cnn.pt
+specs_chinese: manifests
+	python data/scripts/precache_mels.py --manifest_csv $(MANIFESTS)/chinese_all.csv \
+		--cache_root $(CACHE)/mels_chinese \
+		--batch_size $(BATCH) --workers $(WORKERS) \
+		--sr $(SR) --dur $(DUR) --n_mels $(N_MELS) --win_ms $(WIN_MS) --hop_ms $(HOP_MS)
 
-# Fine-tune to 4 Chinese instruments
-# python finetune_cn.py
+# train_irmas:
+# 	python train/train_irmas.py --cache_root $(CACHE)/mels_irmas
 
-# TODO
-# preprocess_all:
-# 	$(PY) scripts/standardize_wav.py "$(AUDIO_ROOT)" "$(PREP_ROOT)" \
-# 		--sr $(SR_AUDIO) --duration_s $(CLIP_SEC) --recursive --verbose
-
-# specs: preprocess_all
-# 	$(PY) scripts/to_spectrogram.py "$(PREP_ROOT)" "$(SPEC_ROOT)" \
-# 		--mode stereo3 --sr $(SR) --duration_s $(DURATION_S) \
-# 		--win_ms $(WIN_MS) --hop_ms $(HOP_MS) \
-# 		--n_mels $(N_MELS) --fmin $(FMIN) --img_size $(IMG_SIZE) \
-# 		--recursive $(SAVE_NPY) --verbose
+clean_cache:
+	rm -rf $(CACHE)/mels_irmas $(CACHE)/mels_chinese $(CACHE)/canonical $(CACHE)/video_tmp
