@@ -20,6 +20,9 @@ generate_gong_dataset:
 generate_dizi_dataset:
 	python data/scripts/generate_data_from_json.py --input data/audio/chinese_instruments/sources/dizi.json
 
+generate_guzheng_dataset:
+	python data/scripts/generate_data_from_json.py --input data/audio/chinese_instruments/sources/guzheng.json
+
 # NOTE: use with caution
 generate_all_datasets: 
 	generate_gong_dataset

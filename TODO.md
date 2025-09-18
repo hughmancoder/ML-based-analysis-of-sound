@@ -9,16 +9,15 @@
 
 ## Preprocessing
 
-- [ ] Normalise Spectrograms
+- [x] Summarise dataset labels script
+- [ ] Generate mel spectrogrm pipeline for IRMAS 
 - [ ] Ensure hanning widnow parameter is applied
-- [ ] Summarise dataset labels script
+
 
 ## Training
 
-- [ ] Add more sound files to the dataset
-- [ ] Setup single instrument classification CNN
-- [ ] Train CNN to classify 4 instruments
-- [ ] Validation at load time
+- [x] Setup single instrument classification CNN
+- [ ] Finetune CNN to classify 4 instruments
 
 
 ## Other

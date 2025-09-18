@@ -6,6 +6,8 @@ archive/
 # Data
 mels/
 IRMAS/
+data/audio/chinese_instruments/video_clips/guzheng
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

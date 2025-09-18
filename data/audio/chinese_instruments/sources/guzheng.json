@@ -1,79 +1,105 @@
 [
   {
-    "file": "E:/qingchaolaopian/Instrument Sound/Original Sound/Guzheng/Guzheng_Pure/SenToChihiroNoKamkikakush_theme.flac",
-    "labels": ["guzheng"],
+    "file": "data/audio/chinese_instruments/video_clips/guzheng/SenToChihiroNoKamkikakush_theme.flac",
+    "labels": [
+      "guzheng"
+    ],
     "time_stamps_to_extract": [],
     "description": "pure guzheng"
   },
   {
-    "file": "E:/qingchaolaopian/Instrument Sound/Original Sound/Guzheng/Guzheng_Pure/Bawangxiejia.flac",
-    "labels": ["guzheng"],
+    "file": "data/audio/chinese_instruments/video_clips/guzheng/Bawangxiejia.flac",
+    "labels": [
+      "guzheng"
+    ],
     "time_stamps_to_extract": [],
     "description": "pure guzheng"
   },
   {
-    "file": "E:/qingchaolaopian/Instrument Sound/Original Sound/Guzheng/Guzheng_Pure/chunjianghuayueye.flac",
-    "labels": ["guzheng"],
+    "file": "data/audio/chinese_instruments/video_clips/guzheng/chunjianghuayueye.flac",
+    "labels": [
+      "guzheng"
+    ],
     "time_stamps_to_extract": [],
     "description": "pure guzheng"
   },
   {
-    "file": "E:/qingchaolaopian/Instrument Sound/Original Sound/Guzheng/Guzheng_Pure/dayu.flac",
-    "labels": ["guzheng"],
+    "file": "data/audio/chinese_instruments/video_clips/guzheng/dayu.flac",
+    "labels": [
+      "guzheng"
+    ],
     "time_stamps_to_extract": [],
     "description": "pure guzheng"
   },
   {
-    "file": "E:/qingchaolaopian/Instrument Sound/Original Sound/Guzheng/Guzheng_Pure/fengshouluogu.flac",
-    "labels": ["guzheng"],
+    "file": "data/audio/chinese_instruments/video_clips/guzheng/fengshouluogu.flac",
+    "labels": [
+      "guzheng"
+    ],
     "time_stamps_to_extract": [],
     "description": "pure guzheng"
   },
   {
-    "file": "E:/qingchaolaopian/Instrument Sound/Original Sound/Guzheng/Guzheng_Pure/gaoshanliushui.flac",
-    "labels": ["guzheng"],
+    "file": "data/audio/chinese_instruments/video_clips/guzheng/gaoshanliushui.flac",
+    "labels": [
+      "guzheng"
+    ],
     "time_stamps_to_extract": [],
     "description": "pure guzheng"
   },
   {
-    "file": "E:/qingchaolaopian/Instrument Sound/Original Sound/Guzheng/Guzheng_Pure/HOYO-MiX - Past Yearning.flac",
-    "labels": ["guzheng"],
+    "file": "data/audio/chinese_instruments/video_clips/guzheng/HOYO-MiX - Past Yearning.flac",
+    "labels": [
+      "guzheng"
+    ],
     "time_stamps_to_extract": [],
     "description": "pure guzheng"
   },
   {
-    "file": "E:/qingchaolaopian/Instrument Sound/Original Sound/Guzheng/Guzheng_Pure/Ling_ying_ping.flac",
-    "labels": ["guzheng"],
+    "file": "data/audio/chinese_instruments/video_clips/guzheng/Ling_ying_ping.flac",
+    "labels": [
+      "guzheng"
+    ],
     "time_stamps_to_extract": [],
     "description": "pure guzheng"
   },
   {
-    "file": "E:/qingchaolaopian/Instrument Sound/Original Sound/Guzheng/Guzheng_Pure/meihuasannong.mp3",
-    "labels": ["guzheng"],
+    "file": "data/audio/chinese_instruments/video_clips/guzheng/meihuasannong.mp3",
+    "labels": [
+      "guzheng"
+    ],
     "time_stamps_to_extract": [],
     "description": "pure guzheng"
   },
   {
-    "file": "E:/qingchaolaopian/Instrument Sound/Original Sound/Guzheng/Guzheng_Pure/Nv_er_qing.flac",
-    "labels": ["guzheng"],
+    "file": "data/audio/chinese_instruments/video_clips/guzheng/Nv_er_qing.flac",
+    "labels": [
+      "guzheng"
+    ],
     "time_stamps_to_extract": [],
     "description": "pure guzheng"
   },
   {
-    "file": "E:/qingchaolaopian/Instrument Sound/Original Sound/Guzheng/Guzheng_Pure/Pipayu(Guzheng Version).flac",
-    "labels": ["guzheng"],
+    "file": "data/audio/chinese_instruments/video_clips/guzheng/Pipayu(Guzheng Version).flac",
+    "labels": [
+      "guzheng"
+    ],
     "time_stamps_to_extract": [],
     "description": "pure guzheng"
   },
   {
-    "file": "E:/qingchaolaopian/Instrument Sound/Original Sound/Guzheng/Guzheng_Pure/shandandankaihuahongyanyan.flac",
-    "labels": ["guzheng"],
+    "file": "data/audio/chinese_instruments/video_clips/guzheng/shandandankaihuahongyanyan.flac",
+    "labels": [
+      "guzheng"
+    ],
     "time_stamps_to_extract": [],
     "description": "pure guzheng"
   },
   {
-    "file": "E:/qingchaolaopian/Instrument Sound/Original Sound/Guzheng/Guzheng_with_background_instrument/HOYO-MiX - Isolated Pine.flac",
-    "labels": ["guzheng_with_background"],
+    "file": "data/audio/chinese_instruments/video_clips/guzheng/HOYO-MiX - Isolated Pine.flac",
+    "labels": [
+      "guzheng"
+    ],
     "time_stamps_to_extract": [],
     "description": "guzheng with background instruments"
   }
