@@ -20,7 +20,7 @@ STRIDE_SEC = CLIP_SEC
 
 # ---------- utils ----------
 def run(cmd: List[str], check=True) -> sp.CompletedProcess:
-    return sp.run(cmd, stdout=sp.PIPE, stderr=sp.STDOUT, text=True, check=check)
+    return sp.run(cmd, stdout=sp.PIPE, stderr=sp.STDOUT, text=True, encoding="utf-8", errors="ignore", check=check)
 
 
 
