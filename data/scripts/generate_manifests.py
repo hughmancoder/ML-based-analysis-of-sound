@@ -4,7 +4,6 @@ from pathlib import Path
 import argparse, csv, re
 
 # TODO: this should be generated from mel spectrogram file rather than irmas
-
 def walk_audio(root: Path):
     for p in root.rglob("*.wav"):
         yield p

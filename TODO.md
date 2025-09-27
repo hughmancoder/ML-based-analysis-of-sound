@@ -10,8 +10,8 @@
 ## Preprocessing
 
 - [x] Summarise dataset labels script
-- [ ] Generate mel spectrogrm pipeline for IRMAS 
-- [ ] Ensure hanning widnow parameter is applied
+- [x] Generate mel spectrogram pipeline for IRMAS 
+
 
 
 ## Training

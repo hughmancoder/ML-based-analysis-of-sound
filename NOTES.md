@@ -12,7 +12,7 @@ Specs: 44.1 kHz, 3.0 s 16 bit stereo WAV
 ## Focus
 
 4 instruments: gong, erhu, dizi, pipa
-- Extract audio from 3 target films.
+- Extract audio from 3 target films
 - Segment into ~30 ms windows 
 
 ### CNN output

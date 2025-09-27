@@ -1,6 +1,8 @@
 IRMAS_DIR := data/audio/IRMAS/IRMAS-TrainingData
 CHINESE_DIR := data/audio/chinese_instruments
 MANIFESTS := data/manifests
+MEL_IRMAS_IMG_ROOT := data/mels/irmas/
+MEL_IMG_MANIFEST := $(MANIFESTS)/irmas_mels.csv
 CACHE := .cache
 
 SR := 44100
@@ -35,21 +37,15 @@ summarise_data:
 manifests:
 	python data/scripts/generate_manifests.py --irmas_dir $(IRMAS_DIR) --chinese_dir $(CHINESE_DIR) --out_dir $(MANIFESTS)
 
-# generates mel-spectrograms from irmas
+# generates .npy mel spectrograms from IRMAS datasset
 specs_irmas: manifests
-	python data/scripts/precache_mels.py --manifest_csv $(MANIFESTS)/irmas_all.csv \
-		--cache_root $(CACHE)/mels_irmas \
-		--batch_size $(BATCH) --workers $(WORKERS) \
-		--sr $(SR) --dur $(DUR) --n_mels $(N_MELS) --win_ms $(WIN_MS) --hop_ms $(HOP_MS)
-
-specs_chinese: manifests
-	python data/scripts/precache_mels.py --manifest_csv $(MANIFESTS)/chinese_all.csv \
-		--cache_root $(CACHE)/mels_chinese \
-		--batch_size $(BATCH) --workers $(WORKERS) \
-		--sr $(SR) --dur $(DUR) --n_mels $(N_MELS) --win_ms $(WIN_MS) --hop_ms $(HOP_MS)
-
-# train_irmas:
-# 	python train/train_irmas.py --cache_root $(CACHE)/mels_irmas
+	python data/scripts/precache_mels.py \
+	  --manifest_csv $(MANIFESTS)/irmas_train.csv \
+	  --cache_root $(CACHE)/mels_irmas \
+	  --mel_manifest_out $(MANIFESTS)/irmas_mels.csv \
+	  --batch_size $(BATCH) --workers $(WORKERS) \
+	  --sr $(SR) --dur $(DUR) --n_mels $(N_MELS) \
+	  --win_ms $(WIN_MS) --hop_ms $(HOP_MS)
 
 clean_cache:
-	rm -rf $(CACHE)/mels_irmas $(CACHE)/mels_chinese $(CACHE)/canonical $(CACHE)/video_tmp
+	rm -rf $(CACHE)/mels_irmas $(CACHE)/mels_chinese $(CACHE)/canonical $(CACHE)/video_tmp 

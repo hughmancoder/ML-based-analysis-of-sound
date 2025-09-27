@@ -6,6 +6,7 @@ archive/
 # Data
 mels/
 IRMAS/
+data/mels/irmas/
 data/audio/chinese_instruments/video_clips/guzheng
 
 
