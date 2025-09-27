@@ -10,9 +10,7 @@ import torch.nn.functional as F
 
 class CNNVarTime(nn.Module):
     """
-    TODO: check classifier.py
-    Target: 128×259
-    Input: (B, 2, 128, W) 2-channel mel-spectrogram shape, W is time frame
+    Input: (B, 2, 128, W) 2-channel mel-spectrogram, variable W (≈ ~300 for 3s @ 10ms hop)
     """
     def __init__(self, in_ch: int = 2, num_classes: int = 11, p_drop: float = 0.5):
         super().__init__()

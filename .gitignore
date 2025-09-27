@@ -3,6 +3,9 @@
 # throwaway files
 archive/ 
 
+# manifests
+
+
 # Data
 mels/
 IRMAS/

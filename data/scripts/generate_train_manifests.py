@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 from pathlib import Path
-import argparse, csv, re
+import argparse, csv, os
 
 # TODO: this should be generated from mel spectrogram file rather than irmas
 def walk_audio(root: Path):
@@ -14,6 +14,17 @@ def class_from_irmas(p: Path) -> str:
 
 def class_from_folder(p: Path) -> str:
     return p.parent.name.lower()
+
+PROJECT_ROOT = Path.cwd()
+
+
+def to_relative_path(path: Path, base: Path = PROJECT_ROOT) -> str:
+    try:
+        return path.relative_to(base).as_posix()
+    except ValueError:
+        # Fall back to os.path.relpath for cases outside the base tree.
+        return Path(os.path.relpath(path, start=base)).as_posix()
+
 
 def write_manifest(rows, out_csv: Path):
     out_csv.parent.mkdir(parents=True, exist_ok=True)
@@ -36,7 +47,7 @@ def main():
     if irmas.exists():
         rows = []
         for p in walk_audio(irmas):
-            rows.append([str(p.resolve()), class_from_irmas(p)])
+            rows.append([to_relative_path(p), class_from_irmas(p)])
         write_manifest(rows, out_dir / "irmas_train.csv")
     else:
         print(f"Warning: irmas_dir {irmas} does not exist")
@@ -46,7 +57,7 @@ def main():
     if chin.exists():
         rows = []
         for p in walk_audio(chin):
-            rows.append([str(p.resolve()), class_from_folder(p)])
+            rows.append([to_relative_path(p), class_from_folder(p)])
         write_manifest(rows, out_dir / "chinese_instruments.csv")
     else:
         print(f"Warning: chinese_dir {chin} does not exist")

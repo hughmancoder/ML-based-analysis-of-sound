@@ -13,6 +13,7 @@ HOP_MS := 10.0
 BATCH := 64
 WORKERS := 8
 
+
 .PHONY: manifests specs_irmas specs_chinese train_irmas clean_cache
 
 # Data Generation
@@ -35,14 +36,17 @@ summarise_data:
 
 # Preprocessing
 manifests:
-	python data/scripts/generate_manifests.py --irmas_dir $(IRMAS_DIR) --chinese_dir $(CHINESE_DIR) --out_dir $(MANIFESTS)
+	python data/scripts/generate_train_manifests.py \
+	--irmas_dir $(IRMAS_DIR) \
+	--chinese_dir $(CHINESE_DIR) \
+	--out_dir $(MANIFESTS)
 
-# generates .npy mel spectrograms from IRMAS datasset
-specs_irmas: manifests
+# generates .npy mel spectrograms from IRMAS train_datasset
+generate_irmas_train_spectrograms: manifests
 	python data/scripts/precache_mels.py \
 	  --manifest_csv $(MANIFESTS)/irmas_train.csv \
 	  --cache_root $(CACHE)/mels_irmas \
-	  --mel_manifest_out $(MANIFESTS)/irmas_mels.csv \
+	  --mel_manifest_out $(MANIFESTS)/irmas_train_mels.csv \
 	  --batch_size $(BATCH) --workers $(WORKERS) \
 	  --sr $(SR) --dur $(DUR) --n_mels $(N_MELS) \
 	  --win_ms $(WIN_MS) --hop_ms $(HOP_MS)

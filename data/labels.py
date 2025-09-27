@@ -1,3 +1,9 @@
+# Canonical IRMAS class order (must match training!)
+CLASSES = [
+    "cel", "cla", "flu", "gac", "gel",
+    "org", "pia", "sax", "tru", "vio", "voi"
+]
+
 LABEL_TO_IDX_IRMAS = {
     'cel':0,'cla':1,'flu':2,'gac':3,'gel':4,'org':5,'pia':6,'sax':7,'tru':8,'vio':9,'voi':10
 }

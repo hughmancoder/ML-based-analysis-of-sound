@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+"""_summary_
+converts a WAV manifest to a mel spectrogram manifest by generating .npy array files
+"""
 from __future__ import annotations
 import argparse, csv, sys, traceback
 from pathlib import Path
