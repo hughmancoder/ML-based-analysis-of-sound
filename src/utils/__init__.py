@@ -19,8 +19,7 @@ from .utils import (
     LABEL_TO_IDX_CN,
     IDX_TO_LABEL_CN,
     load_npy,
-    decode_label_bits,
-    load_manifest,
+    decode_label_bits
 )
 
 __all__ = [

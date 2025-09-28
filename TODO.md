@@ -20,15 +20,17 @@
 - [ ] Pretrain on IRMAS
 - [ ] Finetune CNN to classify 4 instruments
 - [ ] Fix train.ipynb and classification
+- [ ] try setting parameter collate_fn=pad_collate,     # required for variable-length T for both train and test
 
-## Testing
+## Testing and Evaluation
 
 - Train is single-label; test is multi-label.
 - At inference,  model should output independent probabilities per class (sigmoid), and you threshold or rank them
 - [x] Create overlapping clip windows for test set with 3s windows until end and aggregate window predictions. This becomes the clip prediction.
 - [x] make test manifest for test windows (each row is a window, with start and end time)
-- [ ] Fix test window size (currently 201)
-- [ ] Check test.ipynb
+- [x] Fix test window size (currently 201)
+- [ ] Evaluate on trainset
+
 - 
 Idea:
 ```

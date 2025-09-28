@@ -12,6 +12,7 @@ Specs: 44.1 kHz, 3.0 s 16 bit stereo WAV
 ## Focus
 
 4 instruments: gong, erhu, dizi, pipa
+
 - Extract audio from 3 target films
 - Segment into ~30 ms windows 
 
@@ -23,9 +24,10 @@ Sigmoid for multi-label classification (last layer)
 
 ### Train train_irmas.py
 
-Best val acc: 0.5632
+model: src/models/CNNVarTime.py
+Best val accuracy: 0.5632 
+Best test set accuracy: 
 
 ## Checkpoint
 
 [001/30] train 1.6473/0.4288 | val 1.4015/0.5610 | time 19.3s
-

@@ -5,6 +5,8 @@ import numpy as np, pandas as pd, torch
 from torch.utils.data import Dataset
 from pathlib import Path
 import soundfile as sf, librosa
+from src.utils.utils import CLASSES
+
 
 def _hash_path(p: str) -> str:
     return hashlib.md5(p.encode("utf-8")).hexdigest()[:10]
@@ -27,6 +29,26 @@ def load_audio_stereo(path: Path, target_sr: int) -> np.ndarray:
     elif stereo.shape[0] > 2:
         stereo = stereo[:2]
     return stereo
+
+def precache_one(wav_path: Path, label: str, cache_root: Path,
+                 sr: int, dur: float, n_mels: int, win_ms: float, hop_ms: float,
+                 fmin: float, fmax: Optional[float]) -> Path:
+    n_fft, hop, win_length = calc_fft_hop(sr, win_ms, hop_ms)
+    stereo = load_audio_stereo(wav_path, target_sr=sr)
+    stereo = ensure_duration(stereo, sr, dur)
+    mel = mel_stereo2_from_stereo(
+        stereo, sr,
+        n_fft=n_fft, hop=hop, win_length=win_length,
+        n_mels=n_mels, fmin=fmin, fmax=fmax
+    )  # (2, n_mels, T)
+
+    stem = wav_path.stem
+    tag  = f"sr{sr}_dur{dur}_m{n_mels}_w{int(win_ms)}_h{int(hop_ms)}"
+    fn   = f"{stem}__{_hash_path(str(wav_path))}__{tag}.npy"
+    out_path = cache_root / label / fn
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    np.save(out_path, mel.astype(np.float32))
+    return out_path
 
 def ensure_duration(stereo: np.ndarray, sr: int, duration_s: float) -> np.ndarray:
     C, T = stereo.shape; target = int(round(sr * duration_s))
@@ -70,6 +92,31 @@ def _load_segment_stereo(path: Path, target_sr: int, start_s: float, dur_s: floa
     if seg.shape[1] < L:
         seg = np.pad(seg, ((0,0),(0, L - seg.shape[1])), mode="constant")
     return seg
+
+def _label_from_txt(txt_path: Path) -> str:
+    present = set()
+    if txt_path.exists():
+        for line in txt_path.read_text(encoding="utf-8", errors="ignore").splitlines():
+            k = line.strip().lower()
+            if k in CLASSES:
+                present.add(k)
+    # Preserve width and leading zeros
+    return "".join("1" if c in present else "0" for c in CLASSES)
+
+
+def _compute_starts(clip_len_s: float, win_s: float, stride_s: float) -> List[float]:
+    starts: List[float] = []
+    s, eps = 0.0, 1e-6
+    while s + win_s <= clip_len_s + eps:
+        starts.append(round(s, 3))
+        s += stride_s
+    if not starts:
+        return [0.0]
+    # tail coverage (if last window didn't reach end)
+    tail = max(clip_len_s - win_s, 0.0)
+    if starts[-1] + win_s < clip_len_s - eps and abs(tail - starts[-1]) > eps:
+        starts.append(round(tail, 3))
+    return sorted(set(starts))
 
 def _stereo_to_mel(stereo: np.ndarray, sr: int, n_mels: int, win_ms: float, hop_ms: float,
                    fmin: float, fmax: Optional[float]) -> np.ndarray:

@@ -23,7 +23,8 @@ SR        := 44100
 DUR       := 3.0
 N_MELS    := 128
 WIN_MS    := 30.0
-HOP_MS    := 15.0
+HOP_MS    := 10.0
+STRIDE_S := 3 # TODO: try 1.5
 
 # Compute/IO
 BATCH     := 64
@@ -43,16 +44,17 @@ generate_irmas_train_mels: ## Generate train mel cache + manifest
 	  --cache_root $(IRMAS_MELS_DIR)/train \
 	  --mel_manifest_out $(IRMAS_TRAIN_MELS_CSV) \
 	  --sr $(SR) --dur $(DUR) --n_mels $(N_MELS) \
-	  --win_ms $(WIN_MS)
+	  --win_ms $(WIN_MS) --hop_ms $(HOP_MS)
+	 
 
 generate_irmas_test_mels: ## Generate test mel windows + manifest
-	$(PY_SRC) -m scripts.generate_irmas_test_mels \
-	  --irmas_test_dir $(IRMAS_TEST_DIR) \
-	  --cache_root $(IRMAS_TEST_MELS_DIR) \
-	  --mel_manifest_out $(IRMAS_TEST_MELS_CSV) \
+	$(PY_SRC) scripts.generate_irmas_test_mels \
+	  --irmas_test_dir "$(IRMAS_TEST_DIR)" \
+	  --cache_root "$(IRMAS_TEST_MELS_DIR)" \
+	  --mel_manifest_out "$(IRMAS_TEST_MELS_CSV)" \
 	  --sr $(SR) --dur $(DUR) --n_mels $(N_MELS) \
 	  --win_ms $(WIN_MS) --hop_ms $(HOP_MS) \
-	  --write_config
+	  --stride_s $(STRIDE_S)
 
 # Chinese instruments generation
 chinese_percussion:  ## Build Gong dataset from JSON source
@@ -68,6 +70,9 @@ chinese_all: chinese_percussion chinese_dizi chinese_guzheng ## Build all Chines
 
 chinese_summary: ## Summarise Chinese dataset directory
 	$(PY_SRC) -m scripts.summarise_data --root $(CHN_DIR)
+
+IRMAS_summary: ## Summarise Chinese dataset directory
+	$(PY_SRC) -m scripts.summarise_data --root $(IRMAS_TRAIN_DIR)
 
 clean_cache: ## Remove cached mel/spec/tmp data
 	rm -rf $(CACHE_DIR)/mels $(CACHE_DIR)/mels_chinese $(CACHE_DIR)/canonical $(CACHE_DIR)/video_tmp

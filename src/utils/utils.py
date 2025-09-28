@@ -1,4 +1,5 @@
-
+import random
+import torch
 import numpy as np
 import pandas as pd
 
@@ -16,6 +17,14 @@ IDX_TO_LABEL_IRMAS = {v:k for k,v in LABEL_TO_IDX_IRMAS.items()}
 LABEL_TO_IDX_CN = {'guzheng':0, 'suona':1, 'dizi':2, 'gong':3}
 IDX_TO_LABEL_CN = {v:k for k,v in LABEL_TO_IDX_CN.items()}
 
+def setup_seed(seed: int = 1337):
+    torch.manual_seed(seed); np.random.seed(seed); random.seed(seed)
+
+def pick_device() -> str:
+    if torch.backends.mps.is_available(): return "mps"
+    if torch.cuda.is_available():         return "cuda"
+    return "cpu"
+
 def load_npy(path: str) -> np.ndarray:
     """Load a cached mel tensor saved by precache scripts."""
     return np.load(path)
@@ -30,36 +39,3 @@ def decode_label_bits(bits: str, classes) -> str:
     labels = [cls for cls, flag in zip(classes, clean) if flag == "1"]
     return ", ".join(labels) if labels else "none"
 
-def load_manifest(manifest_csv: str) -> pd.DataFrame:
-    """
-    Load a manifest CSV with consistent label handling.
-    
-    - Preserves leading zeros in label_multi.
-    - Normalizes label_multi to exactly len(CLASSES) bits.
-    - If a 'label' column exists, keeps it stringified.
-    - Adds a human-readable decoded label column.
-    """
-    df = pd.read_csv(
-        manifest_csv,
-        dtype={"label_multi": "string"},  # keep leading zeros
-        keep_default_na=False             # don't interpret "000..." as NaN
-    )
-
-    # If plain 'label' column exists, normalize it
-    if "label" in df.columns:
-        df["label"] = df["label"].astype(str).str.strip().str.lower()
-
-    # Clean and normalize label_multi to match CLASSES length
-    if "label_multi" in df.columns:
-        df["label_multi"] = (
-            df["label_multi"].astype("string")
-            .str.strip()
-            .str.lower()
-            .str.replace(r"[^01]", "", regex=True)
-            .str.pad(len(CLASSES), side="right", fillchar="0")
-            .str[:len(CLASSES)]
-        )
-        # Add decoded labels for convenience
-        df["label"] = df["label_multi"].apply(lambda s: decode_label_bits(s, CLASSES))
-
-    return df

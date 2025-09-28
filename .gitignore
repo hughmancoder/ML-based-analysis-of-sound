@@ -2,9 +2,7 @@
 
 # throwaway files
 archive/ 
-
-# manifests
-
+development/
 
 # Data
 mels/

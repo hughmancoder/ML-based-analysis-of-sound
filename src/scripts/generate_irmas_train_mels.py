@@ -26,6 +26,7 @@ from utils.mel_utils import (
     calc_fft_hop,
     mel_stereo2_from_stereo,
     _safe_relpath,
+    precache_one,
 )
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -34,10 +35,6 @@ try:
     from tqdm import tqdm
 except Exception:
     def tqdm(x, **kwargs): return x
-
-
-AUDIO_EXTS = {".wav", ".Wave", ".WAV"}  # IRMAS is WAV, but be tolerant
-
 
 def _iter_wavs_from_train_dir(root: Path) -> Iterable[Tuple[Path, str]]:
     """
@@ -48,7 +45,7 @@ def _iter_wavs_from_train_dir(root: Path) -> Iterable[Tuple[Path, str]]:
         raise FileNotFoundError(f"--irmas_train_dir not found: {root}")
     # Accept both shallow and nested layouts: label is the direct parent folder
     for wav in root.rglob("*"):
-        if wav.is_file() and wav.suffix in AUDIO_EXTS:
+        if wav.is_file():
             label = wav.parent.name.strip().lower()
             yield wav, label
 
@@ -63,28 +60,6 @@ def _iter_wavs_from_manifest_csv(manifest_csv: Path) -> Iterable[Tuple[Path, str
     df["label"] = df["label"].astype(str).str.strip().str.lower()
     for _, row in df.iterrows():
         yield Path(row["filepath"]), str(row["label"])
-
-
-def precache_one(wav_path: Path, label: str, cache_root: Path,
-                 sr: int, dur: float, n_mels: int, win_ms: float, hop_ms: float,
-                 fmin: float, fmax: Optional[float]) -> Path:
-    n_fft, hop, win_length = calc_fft_hop(sr, win_ms, hop_ms)
-    stereo = load_audio_stereo(wav_path, target_sr=sr)
-    stereo = ensure_duration(stereo, sr, dur)
-    mel = mel_stereo2_from_stereo(
-        stereo, sr,
-        n_fft=n_fft, hop=hop, win_length=win_length,
-        n_mels=n_mels, fmin=fmin, fmax=fmax
-    )  # (2, n_mels, T)
-
-    stem = wav_path.stem
-    tag  = f"sr{sr}_dur{dur}_m{n_mels}_w{int(win_ms)}_h{int(hop_ms)}"
-    fn   = f"{stem}__{_hash_path(str(wav_path))}__{tag}.npy"
-    out_path = cache_root / label / fn
-    out_path.parent.mkdir(parents=True, exist_ok=True)
-    np.save(out_path, mel.astype(np.float32))
-    return out_path
-
 
 def main():
     ap = argparse.ArgumentParser(
