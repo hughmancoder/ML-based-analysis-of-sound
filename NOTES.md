@@ -24,3 +24,8 @@ Sigmoid for multi-label classification (last layer)
 ### Train train_irmas.py
 
 Best val acc: 0.5632
+
+## Checkpoint
+
+[001/30] train 1.6473/0.4288 | val 1.4015/0.5610 | time 19.3s
+

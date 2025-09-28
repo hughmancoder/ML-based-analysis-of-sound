@@ -10,7 +10,6 @@ Install prequisites on your machine
 
 `git, python3, pip, make`
 
-
 ### Setup environment
 
 ```bash

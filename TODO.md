@@ -6,25 +6,30 @@
 - [x] Extraction script for IRMAS wav from video files . JSON format should read filepath
 - [x] Add to also get data from local directory (windows/mac and it will append it to the manifest csv) (if array is empty take the whole video for the sample)
 - [ ] ~700 samples for each instrument
-- [ ] Make manifests work for local paths instead of absolute paths
+- [x] Make manifests work for local paths instead of absolute paths
 
 ## Preprocessing
 
 - [x] Summarise dataset labels script
 - [x] Generate mel spectrogram pipeline for IRMAS 
+- [ ] Ensure the train spectrograms are 301 samples wide too
 
 ## Training
 
 - [x] Setup single instrument classification CNN
 - [ ] Pretrain on IRMAS
 - [ ] Finetune CNN to classify 4 instruments
+- [ ] Fix train.ipynb and classification
 
 ## Testing
 
 - Train is single-label; test is multi-label.
 - At inference,  model should output independent probabilities per class (sigmoid), and you threshold or rank them
-- [ ] Create overlapping clip windows for test set with 3s windows until end and aggregate window predictions. This becomes the clip prediction.
-- [ ] make test manifest for test windows (each row is a window, with start and end time)
+- [x] Create overlapping clip windows for test set with 3s windows until end and aggregate window predictions. This becomes the clip prediction.
+- [x] make test manifest for test windows (each row is a window, with start and end time)
+- [ ] Fix test window size (currently 201)
+- [ ] Check test.ipynb
+- 
 Idea:
 ```
 mel_path,label_multi,orig_path,start_s,dur_s,n_frames
@@ -34,3 +39,18 @@ mel_path,label_multi,orig_path,start_s,dur_s,n_frames
 ## Other
 
 - [x] Update README with new commands
+- [ ] Resolve TODOS
+
+## Team Instructions
+
+Install IRMAS datasets at following locations
+
+data/audio/IRMAS/IRMAS-TestingData-Part1
+data/audio/IRMAS/IRMAS-TrainingData
+
+Run preprocessing pipeline
+make manifests
+make generate_irmas_train_mels
+generate_irmas_test_mels
+
+practice trainign neural network in train.ipynb
