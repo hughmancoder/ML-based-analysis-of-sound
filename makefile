@@ -66,6 +66,9 @@ chinese_dizi: ## Build Dizi dataset from JSON source
 chinese_guzheng:  ## Build Guzheng dataset from JSON source
 	$(PY_SRC) -m scripts.generate_data_from_json --input $(CHN_SOURCES_DIR)/guzheng.json
 
+chinese_suona:  ## Build Suona dataset from JSON source
+	$(PY_SRC) -m scripts.generate_data_from_json --input $(CHN_SOURCES_DIR)/suona.json
+
 chinese_all: chinese_percussion chinese_dizi chinese_guzheng ## Build all Chinese datasets
 
 chinese_summary: ## Summarise Chinese dataset directory
