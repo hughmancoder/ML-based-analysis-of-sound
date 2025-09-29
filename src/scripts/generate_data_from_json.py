@@ -13,6 +13,7 @@ from typing import List, Dict, Any, Optional
 OUT_ROOT   = Path("data/audio/chinese_instruments")
 TMP_DIR    = Path(".cache/video_tmp")
 CANON_DIR  = Path(".cache/canonical")
+REPO_ROOT  = Path(__file__).resolve().parents[2]
 SR         = 44_100
 CHANNELS   = 2
 CLIP_SEC   = 3.0
@@ -106,13 +107,32 @@ def ytdlp_download(url: str) -> Path:
         raise RuntimeError("yt-dlp produced no media file")
     return media
 
-def prepare_source(entry: Dict[str, Any]) -> MediaSource:
+def _resolve_local_path(path_str: str, base_dir: Path) -> Path:
+    """Resolve a manifest 'file' field relative to useful project roots."""
+
+    path = Path(path_str).expanduser()
+    if path.is_absolute():
+        candidates = [path]
+    else:
+        candidates = [
+            (base_dir / path).expanduser(),
+            (REPO_ROOT / path).expanduser(),
+        ]
+
+    for candidate in candidates:
+        resolved = candidate.resolve(strict=False)
+        if resolved.exists():
+            return resolved
+
+    search_list = "\n  - ".join(str(c.resolve(strict=False)) for c in candidates)
+    raise FileNotFoundError(f"Local file not found. Checked:\n  - {search_list}")
+
+
+def prepare_source(entry: Dict[str, Any], base_dir: Path) -> MediaSource:
     if entry.get("file"):
-        p = Path(entry["file"]).expanduser().resolve()
-        if not p.exists():
-            raise FileNotFoundError(f"Local file not found: {p}")
-        return MediaSource(url_or_file=str(p), local_path=p)
-    url = entry.get("video") or entry.get("url")
+         p = _resolve_local_path(entry["file"], base_dir)
+         return MediaSource(url_or_file=str(p), local_path=p)
+    url = entry.get("video") or entry.get("url")    
     if not url:
         raise ValueError("Entry needs 'file' or 'video'/'url'.")
     if not which("yt-dlp"):
@@ -171,7 +191,8 @@ def main() -> None:
     if not which("ffmpeg") or not which("ffprobe"):
         raise SystemExit("ffmpeg/ffprobe must be installed and on PATH.")
 
-    entries: List[Dict[str, Any]] = json.loads(args.input.read_text(encoding="utf-8"))
+    manifest_path = args.input.expanduser().resolve()
+    entries: List[Dict[str, Any]] = json.loads(manifest_path.read_text(encoding="utf-8"))
     total_created = 0
 
     for entry in entries:
@@ -189,7 +210,7 @@ def main() -> None:
 
         # Prepare media
         try:
-            media = prepare_source(entry)
+            media = prepare_source(entry, manifest_path.parent)
         except Exception as e:
             print(f"[skip] source error: {e}")
             continue
@@ -200,7 +221,7 @@ def main() -> None:
         ranges = entry.get("time_stamps_to_extract", [])
         clip_times: List[tuple] = []
         if ranges:
-            print("[info] using time_stamps_to_extract with {} ranges",format(ranges))
+            print(f"[info] using time_stamps_to_extract with {len(ranges)} ranges: {ranges}")
             for s, e in ranges:
                 rs, re = parse_time(s), parse_time(e)
                 print(f"  range {rs} to {re} sec")
