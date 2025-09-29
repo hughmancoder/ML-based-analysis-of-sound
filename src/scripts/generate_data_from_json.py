@@ -99,8 +99,37 @@ def next_irmas_id(label_dir: Path) -> int:
 def ytdlp_download(url: str) -> Path:
     ensure_dir(TMP_DIR)
     outtmpl = str(TMP_DIR / "%(id)s.%(ext)s")
-    cmd = ["yt-dlp","-f","bestaudio/best","-o",outtmpl,"--restrict-filenames","--no-playlist","--no-warnings",url]
-    run_checked(cmd)
+    format_candidates = ["bestaudio/best", "bestaudio", "best", None]
+
+    last_error: Optional[sp.CalledProcessError] = None
+    for fmt in format_candidates:
+        cmd = [
+            "yt-dlp",
+            "-o",
+            outtmpl,
+            "--restrict-filenames",
+            "--no-playlist",
+            "--no-warnings",
+        ]
+        if fmt:
+            cmd.extend(["-f", fmt])
+        cmd.append(url)
+
+        try:
+            run(cmd, check=True)
+            last_error = None
+            break
+        except sp.CalledProcessError as err:
+            last_error = err
+            if fmt is None:
+                print("---- command failed ----")
+                print(" ".join(cmd))
+                print(err.output)
+            else:
+                print(f"[warn] yt-dlp format '{fmt}' failed; trying fallback")
+
+    if last_error:
+        raise last_error
     files = sorted(TMP_DIR.glob("*"), key=lambda p: p.stat().st_mtime, reverse=True)
     media = next((p for p in files if p.is_file() and p.suffix not in {".part",".ytdl"}), None)
     if media is None:
