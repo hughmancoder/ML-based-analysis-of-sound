@@ -1,35 +1,12 @@
 [
-  {
-    "file": "data/audio/chinese_instruments/audio_clips/guzheng/SenToChihiroNoKamkikakush_theme.flac",
-    "labels": [
-      "guzheng"
-    ],
-    "time_stamps_to_extract": [],
-    "description": "pure guzheng"
-  },
-  {
-    "file": "data/audio/chinese_instruments/audio_clips/guzheng/Bawangxiejia.flac",
-    "labels": [
-      "guzheng"
-    ],
-    "time_stamps_to_extract": [],
-    "description": "pure guzheng"
-  },
+
   {
     "file": "data/audio/chinese_instruments/audio_clips/guzheng/chunjianghuayueye.flac",
     "labels": [
       "guzheng"
     ],
     "time_stamps_to_extract": [],
-    "description": "pure guzheng"
-  },
-  {
-    "file": "data/audio/chinese_instruments/audio_clips/guzheng/dayu.flac",
-    "labels": [
-      "guzheng"
-    ],
-    "time_stamps_to_extract": [],
-    "description": "pure guzheng"
+    "description": "pure guzheng (NOTE: this file has 199 samples and has a large proportion of the dataset, consider adding a time stamp to extract to crop it down)"
   },
   {
     "file": "data/audio/chinese_instruments/audio_clips/guzheng/fengshouluogu.flac",
@@ -94,13 +71,5 @@
     ],
     "time_stamps_to_extract": [],
     "description": "pure guzheng"
-  },
-  {
-    "file": "data/audio/chinese_instruments/audio_clips/guzheng/HOYO-MiX - Isolated Pine.flac",
-    "labels": [
-      "guzheng"
-    ],
-    "time_stamps_to_extract": [],
-    "description": "guzheng with background instruments"
   }
 ]
