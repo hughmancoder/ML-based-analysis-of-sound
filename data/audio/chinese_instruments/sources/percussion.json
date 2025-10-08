@@ -1,23 +1,50 @@
 [
   {
-    "file": "data/audio/chinese_instruments/video_clips/gong/old_gong_natural.mp3",
-    "labels": [
-      "percussion"
-    ],
-    "time_stamps_to_extract": [],
-    "description": ""
-  },
-  {
-    "video": "https://www.youtube.com/watch?v=mL2r6E1E7sM",
+    "file": "data/audio/chinese_instruments/audio_clips/percussion/old_gong_natural.mp3",
     "labels": [
       "percussion"
     ],
     "time_stamps_to_extract": [
       [
-        "0:18",
-        "2:05"
+        "0:00",
+        "0:35"
       ]
     ],
-    "description": ""
+    "description": "old gong"
+  },
+  {
+    "file": "data/audio/chinese_instruments/audio_clips/percussion/chinese gong.wav",
+    "labels": [
+      "percussion"
+    ],
+    "time_stamps_to_extract": [
+      [
+        "0:07",
+        "0:35"
+      ]
+    ],
+    "description": "chinese gong"
+  },
+  {
+    "file": "data/audio/chinese_instruments/audio_clips/percussion/Peking Opera Drums and Songs.mp3",
+    "labels": ["percussion"],
+      "time_stamps_to_extract": [
+      [
+        "0:20",
+        "8:10"
+      ]
+    ],
+    "description": "Peking Opera percussion suite arranged by Yang Jun, featuring Ban Gu, gongs, cymbals, Suona, Sheng, and Ruan ensemble from Fan Zhiyun's 2017 recital. Note: recording may contain noise"
+  },
+  {
+    "file": "data/audio/chinese_instruments/audio_clips/percussion/Drums Rites of Thundering.wav",
+    "labels": ["percussion"],
+       "time_stamps_to_extract": [
+      [
+        "0:20",
+        "8:05"
+      ]
+    ],
+    "description": "Drum percussion"
   }
 ]

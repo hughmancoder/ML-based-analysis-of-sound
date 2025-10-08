@@ -57,7 +57,7 @@ generate_irmas_test_mels: ## Generate test mel windows + manifest
 	  --stride_s $(STRIDE_S)
 
 # Chinese instruments generation
-chinese_percussion:  ## Build Gong dataset from JSON source
+chinese_percussion:  
 	$(PY_SRC) -m scripts.generate_data_from_json --input $(CHN_SOURCES_DIR)/percussion.json
 
 chinese_dizi: ## Build Dizi dataset from JSON source
@@ -68,6 +68,7 @@ chinese_guzheng:  ## Build Guzheng dataset from JSON source
 
 chinese_suona:  ## Build Suona dataset from JSON source
 	$(PY_SRC) -m scripts.generate_data_from_json --input $(CHN_SOURCES_DIR)/suona.json
+
 
 chinese_all: chinese_percussion chinese_dizi chinese_guzheng chinese_suona ## Build all Chinese datasets
 
