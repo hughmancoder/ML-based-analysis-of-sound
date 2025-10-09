@@ -19,7 +19,7 @@
 - [x] Setup single instrument classification CNN
 - [ ] Pretrain on IRMAS
 - [ ] Finetune CNN to classify 4 instruments
-- [ ] Fix train.ipynb and classification
+- [ ] Fix train.ipynb and classification and create a ML branch
 - [ ] try setting parameter collate_fn=pad_collate,     # required for variable-length T for both train and test
 
 ## Testing and Evaluation
