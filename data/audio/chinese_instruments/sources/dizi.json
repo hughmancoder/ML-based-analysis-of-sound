@@ -52,11 +52,11 @@
     "labels": ["dizi"],
     "time_stamps_to_extract": [["0.00","4.43"]],
     "description": "Music_楚歌"
-  }
-    {
-    "video": "https://www.youtube.com/watch?v=-FoAZbf7ha0&list=PLywEKgzd1jObWNF9ofaFKIhC2MDATgrXw&index=1",
-    "labels": ["dizi"],
-    "time_stamps_to_extract": [["0.25","1.47"],["2.50","4.32"]],
-    "description": "odd_dizi"
-  }
+  },
+  {
+  "video": "https://www.youtube.com/watch?v=-FoAZbf7ha0&list=PLywEKgzd1jObWNF9ofaFKIhC2MDATgrXw&index=1",
+  "labels": ["dizi"],
+  "time_stamps_to_extract": [["0.25","1.47"],["2.50","4.32"]],
+  "description": "odd_dizi"
+}
 ]

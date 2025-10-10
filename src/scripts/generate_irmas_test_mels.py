@@ -17,7 +17,7 @@ import pandas as pd
 import soundfile as sf
 
 # Assumes utils.* is importable via PYTHONPATH (no hardcoded sys.path edits here).
-from utils.utils import CLASSES
+from utils.utils import IRMAS_CLASSES
 from utils.mel_utils import (
     _compute_starts,      # (clip_len_s, win_s, stride_s) -> start times (s)
     _hash_path,           # stable short hash for filenames
@@ -119,7 +119,7 @@ def main():
         w.writerows(rows)
 
     df = pd.read_csv(out_csv, dtype={"label_multi": "string"}, keep_default_na=False)
-    bad = df.index[df["label_multi"].str.len() != len(CLASSES)].tolist()
+    bad = df.index[df["label_multi"].str.len() != len(IRMAS_CLASSES)].tolist()
     if bad:
         bad_csv = out_csv.with_suffix(".bad_rows.csv")
         df.iloc[bad].to_csv(bad_csv, index=False)

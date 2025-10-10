@@ -13,6 +13,7 @@
 - [x] Summarise dataset labels script
 - [x] Generate mel spectrogram pipeline for IRMAS 
 - [ ] Ensure the train spectrograms are 301 samples wide too
+- [ ] Confusion matrixx`
 
 ## Training
 
