@@ -36,7 +36,7 @@ Activate environment (venv) on every new terminal
 refer to the make file for command lines
 
 ```bash
-make extract_data # generates dataset from video files
+make chinese_all # generates dataset from video files
 ```
 
 ## Resources
