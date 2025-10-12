@@ -7,11 +7,13 @@ Parameter
 Result
 Model weight source
 
-## CNNVarTime
+## CNNVarTime Training
+
+Change the train number on each run
+
+`TRAIN_NUMBER = "train_2" `
 
 ### Train 1
-
-Junran
 
 EPOCHS       = 200
 BATCH_SIZE   = 128
