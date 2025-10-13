@@ -14,7 +14,7 @@
 - [x] Generate mel spectrogram pipeline for IRMAS 
 - [x] Ensure the train spectrograms are 301 samples wide too
 - [x] Confusion matrixx`
-- [ ] Remove one hot encoded labels in favour of a more flexible scheme (have a think about this)
+- [x] Remove one hot encoded labels in favour of a more flexible scheme (have a think about this)
 
 ## Training
 
@@ -33,6 +33,9 @@
 - [x] Fix test window size (currently 201)
 - [ ] Evaluate on trainset
 - [ ] Improve evaluation on unseen data
+
+## Bugs
+- [ ] Fix Test single class and improt errors
 
 - 
 Idea:

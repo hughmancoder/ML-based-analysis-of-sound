@@ -3,7 +3,7 @@ import time
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader, random_split
-from typing import Dict, Any, Tuple, Optional
+from typing import Dict, Any, List, Tuple, Optional
 from src.utils.datasets import SingleClassMelNpyDataset
 from src.models import CNNVarTime
 
@@ -169,7 +169,6 @@ def save_checkpoint(payload: Dict[str, Any], path: Path):
     path.parent.mkdir(parents=True, exist_ok=True)
     torch.save(payload, path)
 
-
 def load_checkpoint(
     path: Path,
     device: str,
@@ -202,17 +201,28 @@ def load_checkpoint(
 
     return ckpt
 
+
 def load_model_state(ckpt_path: str) -> Dict[str, torch.Tensor]:
     ckpt = torch.load(ckpt_path, map_location="cpu")
     sd = None
     if isinstance(ckpt, dict):
         for k in ("model_state", "model_state_dict", "state_dict", "model"):
             if isinstance(ckpt.get(k), dict):
-                sd = ckpt[k]; break
+                sd = ckpt[k]
+                break
     if sd is None:
         sd = ckpt if isinstance(ckpt, dict) else ckpt
-    # strip potential DDP prefix
-    return { (k[7:] if k.startswith("module.") else k): v for k, v in sd.items() }
+    return {(k[7:] if k.startswith("module.") else k): v for k, v in sd.items()}
+
+def class_names_from_ckpt(ckpt_path: str, fallback: List[str]) -> Tuple[List[str], Dict[str, int]]:
+    ckpt = torch.load(ckpt_path, map_location="cpu")
+    if isinstance(ckpt, dict) and isinstance(ckpt.get("label_to_idx"), dict):
+        l2i = ckpt["label_to_idx"]
+        ordered = [name for name, idx in sorted(l2i.items(), key=lambda kv: kv[1])]
+        return ordered, l2i
+    return list(fallback), {name: i for i, name in enumerate(fallback)}
+
+
 
 def class_names_from_ckpt(ckpt_path: str, fallback: List[str]) -> Tuple[List[str], Dict[str,int]]:
     ckpt = torch.load(ckpt_path, map_location="cpu")
