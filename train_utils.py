@@ -6,6 +6,8 @@ from torch.utils.data import DataLoader, random_split
 from typing import Dict, Any, Tuple, Optional
 from src.utils.datasets import SingleClassMelNpyDataset
 from src.models import CNNVarTime
+from typing import List, Tuple, Dict
+
 
 def seed_everything(seed: int = 1337):
     import random, numpy as np, torch
@@ -93,7 +95,7 @@ def evaluate(
             y = y.to(device, non_blocking=pin_mem)
 
             if use_cuda_amp:
-                with torch.cuda.amp.autocast():
+                with torch.amp.autocast("cuda"):
                     logits = model(X)
                     loss = criterion(logits, y)
             else:

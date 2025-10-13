@@ -23,7 +23,7 @@ PATIENCE     = 20
 NUM_WORKERS  = 0 
 
 epochs run: 137
-validation_acuracy: 0.7197
+validation_acuracy: 72.0%
 model_weights `saved_weights/irmas_pretrain_single_class/train_1/best_val_acc_0.72.pt`
 
 ### Train 2
