@@ -15,6 +15,14 @@ Change the train number on each run
 
 ### Train 1
 
+Preprocessing parameters
+SR        := 44100
+DUR       := 3.0
+N_MELS    := 128
+WIN_MS    := 30.0
+HOP_MS    := 10.0
+STRIDE_S := 3
+
 EPOCHS       = 200
 BATCH_SIZE   = 128
 LR           = 1e-3
@@ -28,9 +36,16 @@ epochs run: 137
 validation_acuracy: 0.7197
 model_weights `saved_weights/irmas_pretrain_single_class/train_1/best_val_acc_0.72.pt`
 
+
 ### Train 2
 
 preprocessing_parameters
+SR        := 44100
+DUR       := 3.0
+N_MELS    := 128
+WIN_MS    := 30.0
+HOP_MS    := 10.0
+STRIDE_S := 3
 
 EPOCHS       = 200
 BATCH_SIZE   = 32
@@ -43,6 +58,18 @@ NUM_WORKERS  = 2
 
 model_weights `saved_weights/irmas_pretrain_single_class/train_2`
 validation_accuracy: 66.5%
+Precision (0.66)
+Recall (0.63)
 
 
 
+
+
+### Train 3
+
+SR        := 44100
+DUR       := 3.0
+N_MELS    := 128
+WIN_MS    := 30.0
+HOP_MS    := 10.0
+STRIDE_S := 1.5
