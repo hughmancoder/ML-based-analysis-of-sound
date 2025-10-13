@@ -48,9 +48,11 @@ generate_irmas_train_mels: ## Generate train mel cache + manifest
 	 
 generate_irmas_test_mels: ## Generate test mel windows + manifest
 	$(PY_SRC) -m scripts.generate_irmas_test_mels \
-	  --irmas_test_dir "$(IRMAS_TEST_DIR)" \
+	  --input_dir "$(IRMAS_TEST_DIR)" \
 	  --cache_root "$(IRMAS_TEST_MELS_DIR)" \
-	  --mel_manifest_out "$(IRMAS_TEST_MELS_CSV)" \
+	  --manifest_out "$(IRMAS_TEST_MELS_CSV)" \
+	  --dataset_name IRMAS \
+	  --project_root "$(PROJECT_ROOT)" \
 	  --sr $(SR) --dur $(DUR) --n_mels $(N_MELS) \
 	  --win_ms $(WIN_MS) --hop_ms $(HOP_MS) \
 	  --stride_s $(STRIDE_S)

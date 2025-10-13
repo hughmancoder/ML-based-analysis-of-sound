@@ -257,7 +257,7 @@ def train_loop(
     model = build_model(num_classes=num_classes, dropout=dropout, in_ch=2, device=device)
     optimizer = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=weight_decay)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=epochs)
-    criterion = nn.CrossEntropyLoss()
+    criterion = nn.CrossEntropyLoss() # could use softmax
 
     # Resume bookkeeping
     start_epoch = 1

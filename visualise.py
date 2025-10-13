@@ -11,7 +11,7 @@ import numpy as np
 import pandas as pd
 import soundfile as sf
 
-from src.utils.utils import IRMAS_CLASSES, decode_label_bits
+from src.classes import IRMAS_CLASSES, decode_label_bits
 
 
 def load_npy(path: str | Path) -> np.ndarray:

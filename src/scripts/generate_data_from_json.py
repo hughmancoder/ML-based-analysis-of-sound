@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Generates IRMAS-style WAV clips from a minimal JSON manifest
+Generates IRMAS-congruent dataset clips from a minimal JSON manifest
 """
 
 from __future__ import annotations
