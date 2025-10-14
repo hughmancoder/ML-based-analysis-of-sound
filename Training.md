@@ -73,3 +73,15 @@ odel_weights `saved_weights/irmas_pretrain_single_class/train_5`
 validation_accuracy: 70.9%
 
 ## Train 6
+
+EPOCHS       = 500
+BATCH_SIZE   = 128
+LR           = 1e-3
+WEIGHT_DECAY = 1e-4
+VAL_FRAC     = 0.15
+DROPOUT      = 0.3
+PATIENCE     = 100
+NUM_WORKERS  = 0 
+
+del_weights `saved_weights/irmas_pretrain_single_class/train_6`
+validation_accuracy: 74.7%
