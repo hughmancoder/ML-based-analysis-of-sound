@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import List, Dict, Any, Optional
 
 # ---------- Config ----------
-OUT_ROOT   = Path("data/audio/chinese_instruments")
+OUT_ROOT   = Path("data/audio/chinese_instruments/train")
 TMP_DIR    = Path(".cache/video_tmp")
 CANON_DIR  = Path(".cache/canonical")
 REPO_ROOT  = Path(__file__).resolve().parents[2]

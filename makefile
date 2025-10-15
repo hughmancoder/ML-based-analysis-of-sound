@@ -5,17 +5,20 @@ PY_SRC    := PYTHONPATH=src $(PY)
 DATA_DIR          := data
 IRMAS_TRAIN_DIR   := $(DATA_DIR)/audio/IRMAS/IRMAS-TrainingData
 IRMAS_TEST_DIR    := $(DATA_DIR)/audio/IRMAS/IRMAS-TestingData-Part1
-CHN_DIR           := $(DATA_DIR)/audio/chinese_instruments
-CHN_SOURCES_DIR   := $(CHN_DIR)/sources
+CHINESE_INSTRUMENTS_DIR  := $(DATA_DIR)/audio/chinese_instruments
+CHN_SOURCES_DIR   := $(CHINESE_INSTRUMENTS_DIR)/sources
+CHN_TRAIN_DIR   := $(CHINESE_INSTRUMENTS_DIR)/train
 
 CACHE_DIR         := .cache
 IRMAS_MELS_DIR    := $(CACHE_DIR)/mels/irmas
+CHINESE_MELS_DIR    := $(CACHE_DIR)/mels/chinese_instruments
 IRMAS_TEST_MELS_DIR   := $(CACHE_DIR)/mels/irmas/test
 
 # Manifests
 MANIFEST_DIR      := $(DATA_DIR)/manifests
 IRMAS_TRAIN_MANIFEST := $(MANIFEST_DIR)/irmas_train.csv
 IRMAS_TRAIN_MELS_CSV := $(MANIFEST_DIR)/irmas_train_mels.csv
+CHINESE_INSTRUMENTS_TRAIN_MELS_CSV := $(MANIFEST_DIR)/chinese_instruments_train_mels.csv
 IRMAS_TEST_MELS_CSV  := $(MANIFEST_DIR)/irmas_test_mels.csv
 
 # Audio/Mel Parameters
@@ -34,10 +37,9 @@ WORKERS   := 8
 manifests: 
 	$(PY_SRC) -m scripts.generate_train_manifests \
 	  --irmas_dir $(IRMAS_TRAIN_DIR) \
-	  --chinese_dir $(CHN_DIR) \
+	  --chinese_dir $(CHINESE_INSTRUMENTS_DIR) \
 	  --out_dir $(MANIFEST_DIR)
 
-# IRMAS — Train mels 
 generate_irmas_train_mels: ## Generate train mel cache + manifest
 	$(PY_SRC) -m scripts.generate_irmas_train_mels \
 	  --irmas_train_dir $(IRMAS_TRAIN_DIR) \
@@ -57,6 +59,14 @@ generate_irmas_test_mels: ## Generate test mel windows + manifest
 	  --win_ms $(WIN_MS) --hop_ms $(HOP_MS) \
 	  --stride_s $(STRIDE_S)
 
+generate_chinese_train_mels: 
+	$(PY_SRC) -m scripts.generate_irmas_train_mels \
+	  --irmas_train_dir $(CHN_TRAIN_DIR) \
+	  --cache_root $(CHINESE_MELS_DIR) \
+	  --mel_manifest_out $(CHINESE_INSTRUMENTS_TRAIN_MELS_CSV) \
+	  --sr $(SR) --dur $(DUR) --n_mels $(N_MELS) \
+	  --win_ms $(WIN_MS) --hop_ms $(HOP_MS)
+
 # Chinese instruments generation
 chinese_percussion:  
 	$(PY_SRC) -m scripts.generate_data_from_json --input $(CHN_SOURCES_DIR)/percussion.json
@@ -70,11 +80,10 @@ chinese_guzheng:  ## Build Guzheng dataset from JSON source
 chinese_suona:  ## Build Suona dataset from JSON source
 	$(PY_SRC) -m scripts.generate_data_from_json --input $(CHN_SOURCES_DIR)/suona.json
 
-
 chinese_all: chinese_percussion chinese_dizi chinese_guzheng chinese_suona ## Build all Chinese datasets
 
 chinese_summary: ## Summarise Chinese dataset directory
-	$(PY_SRC) -m scripts.summarise_data --root $(CHN_DIR)
+	$(PY_SRC) -m scripts.summarise_data --root $(CHN_TRAIN_DIR)
 
 IRMAS_summary: ## Summarise Chinese dataset directory
 	$(PY_SRC) -m scripts.summarise_data --root $(IRMAS_TRAIN_DIR)

@@ -5,8 +5,6 @@ import numpy as np, pandas as pd, torch
 from torch.utils.data import Dataset
 from pathlib import Path
 import soundfile as sf, librosa
-from src.classes import IRMAS_CLASSES
-
 
 def _hash_path(p: str) -> str:
     return hashlib.md5(p.encode("utf-8")).hexdigest()[:10]
@@ -92,8 +90,6 @@ def _load_segment_stereo(path: Path, target_sr: int, start_s: float, dur_s: floa
     if seg.shape[1] < L:
         seg = np.pad(seg, ((0,0),(0, L - seg.shape[1])), mode="constant")
     return seg
-
-
 
 
 def _compute_starts(clip_len_s: float, win_s: float, stride_s: float) -> List[float]:

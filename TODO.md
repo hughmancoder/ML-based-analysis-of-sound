@@ -15,6 +15,7 @@
 - [x] Ensure the train spectrograms are 301 samples wide too
 - [x] Confusion matrixx`
 - [x] Remove one hot encoded labels in favour of a more flexible scheme (have a think about this)
+- [ ] Use generate IRMAS_test_mels.py to generate chinese data
 
 ## Training
 
