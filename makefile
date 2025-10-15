@@ -24,7 +24,7 @@ DUR       := 3.0
 N_MELS    := 128
 WIN_MS    := 30.0
 HOP_MS    := 10.0
-STRIDE_S := 3 # TODO: try 1.5
+STRIDE_S := 1.5 # TODO: try 1.5, 3
 
 # Compute/IO
 BATCH     := 64
@@ -46,7 +46,6 @@ generate_irmas_train_mels: ## Generate train mel cache + manifest
 	  --sr $(SR) --dur $(DUR) --n_mels $(N_MELS) \
 	  --win_ms $(WIN_MS) --hop_ms $(HOP_MS)
 	 
-
 generate_irmas_test_mels: ## Generate test mel windows + manifest
 	$(PY_SRC) -m scripts.generate_irmas_test_mels \
 	  --irmas_test_dir "$(IRMAS_TEST_DIR)" \

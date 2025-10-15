@@ -20,11 +20,11 @@ import pandas as pd
 
 # Import the EXACT helpers you already use
 from utils.mel_utils import (
-    _hash_path,
-    load_audio_stereo,
-    ensure_duration,
-    calc_fft_hop,
-    mel_stereo2_from_stereo,
+    # _hash_path,
+    # load_audio_stereo,
+    # ensure_duration,
+    # calc_fft_hop,
+    # mel_stereo2_from_stereo,
     _safe_relpath,
     precache_one,
 )
