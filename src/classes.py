@@ -4,6 +4,7 @@ IRMAS_CLASSES = [
     "pia", "sax", "tru", "vio", "voi"
 ]
 
+# TODO: use in label generation
 CHINESE_CLASSES = [
     "guzheng", "suona", "dizi", "percussion"
 ]

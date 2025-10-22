@@ -27,7 +27,10 @@ DUR       := 3.0
 N_MELS    := 128
 WIN_MS    := 30.0
 HOP_MS    := 10.0
-STRIDE_S := 1.5 # TODO: try 1.5, 3
+STRIDE_S := 1.5 # NOTE: try 3
+CHANNELS := 2
+VIDEO_TMP_DIR := $(CACHE_DIR)/video_tmp
+CANONICAL_DIR := $(CACHE_DIR)/canonical
 
 # Compute/IO
 BATCH     := 64
@@ -69,16 +72,52 @@ generate_chinese_train_mels:
 
 # Chinese instruments generation
 chinese_percussion:  
-	$(PY_SRC) -m scripts.generate_data_from_json --input $(CHN_SOURCES_DIR)/percussion.json
+	$(PY_SRC) -m scripts.generate_data_from_json \
+	  --input $(CHN_SOURCES_DIR)/percussion.json \
+	  --out-root $(CHN_TRAIN_DIR) \
+	  --tmp-dir $(VIDEO_TMP_DIR) \
+	  --canon-dir $(CANONICAL_DIR) \
+	  --repo-root $(CURDIR) \
+	  --sample-rate $(SR) \
+	  --channels $(CHANNELS) \
+	  --clip-sec $(DUR) \
+	  --stride-sec $(DUR)
 
 chinese_dizi: ## Build Dizi dataset from JSON source
-	$(PY_SRC) -m scripts.generate_data_from_json --input $(CHN_SOURCES_DIR)/dizi.json
+	$(PY_SRC) -m scripts.generate_data_from_json \
+	  --input $(CHN_SOURCES_DIR)/dizi.json \
+	  --out-root $(CHN_TRAIN_DIR) \
+	  --tmp-dir $(VIDEO_TMP_DIR) \
+	  --canon-dir $(CANONICAL_DIR) \
+	  --repo-root $(CURDIR) \
+	  --sample-rate $(SR) \
+	  --channels $(CHANNELS) \
+	  --clip-sec $(DUR) \
+	  --stride-sec $(DUR)
 
 chinese_guzheng:  ## Build Guzheng dataset from JSON source
-	$(PY_SRC) -m scripts.generate_data_from_json --input $(CHN_SOURCES_DIR)/guzheng.json
+	$(PY_SRC) -m scripts.generate_data_from_json \
+	  --input $(CHN_SOURCES_DIR)/guzheng.json \
+	  --out-root $(CHN_TRAIN_DIR) \
+	  --tmp-dir $(VIDEO_TMP_DIR) \
+	  --canon-dir $(CANONICAL_DIR) \
+	  --repo-root $(CURDIR) \
+	  --sample-rate $(SR) \
+	  --channels $(CHANNELS) \
+	  --clip-sec $(DUR) \
+	  --stride-sec $(DUR)
 
 chinese_suona:  ## Build Suona dataset from JSON source
-	$(PY_SRC) -m scripts.generate_data_from_json --input $(CHN_SOURCES_DIR)/suona.json
+	$(PY_SRC) -m scripts.generate_data_from_json \
+	  --input $(CHN_SOURCES_DIR)/suona.json \
+	  --out-root $(CHN_TRAIN_DIR) \
+	  --tmp-dir $(VIDEO_TMP_DIR) \
+	  --canon-dir $(CANONICAL_DIR) \
+	  --repo-root $(CURDIR) \
+	  --sample-rate $(SR) \
+	  --channels $(CHANNELS) \
+	  --clip-sec $(DUR) \
+	  --stride-sec $(DUR)
 
 chinese_all: chinese_percussion chinese_dizi chinese_guzheng chinese_suona ## Build all Chinese datasets
 
