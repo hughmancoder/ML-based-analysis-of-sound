@@ -5,7 +5,7 @@ import numpy as np, pandas as pd, torch
 from torch.utils.data import Dataset
 from pathlib import Path
 import soundfile as sf, librosa
-from src.utils.utils import CLASSES
+from src.utils.utils import IRMAS_CLASSES
 
 
 def _hash_path(p: str) -> str:
@@ -98,10 +98,10 @@ def _label_from_txt(txt_path: Path) -> str:
     if txt_path.exists():
         for line in txt_path.read_text(encoding="utf-8", errors="ignore").splitlines():
             k = line.strip().lower()
-            if k in CLASSES:
+            if k in IRMAS_CLASSES:
                 present.add(k)
     # Preserve width and leading zeros
-    return "".join("1" if c in present else "0" for c in CLASSES)
+    return "".join("1" if c in present else "0" for c in IRMAS_CLASSES)
 
 
 def _compute_starts(clip_len_s: float, win_s: float, stride_s: float) -> List[float]:

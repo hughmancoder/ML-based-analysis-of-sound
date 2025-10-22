@@ -1,33 +1,21 @@
-import random
-import torch
-import numpy as np
-import pandas as pd
+
 
 # Canonical IRMAS class order (must match training!)
-CLASSES = [
+IRMAS_CLASSES = [
     "cel","cla","flu","gac","gel","org","pia","sax","tru","vio","voi"
 ]
 
-LABEL_TO_IDX_IRMAS = {
-    'cel':0,'cla':1,'flu':2,'gac':3,'gel':4,'org':5,'pia':6,'sax':7,'tru':8,'vio':9,'voi':10
-}
+# LABEL_TO_IDX_IRMAS = {
+#     'cel':0,'cla':1,'flu':2,'gac':3,'gel':4,'org':5,'pia':6,'sax':7,'tru':8,'vio':9,'voi':10
+# }
 
-IDX_TO_LABEL_IRMAS = {v:k for k,v in LABEL_TO_IDX_IRMAS.items()}
+# IDX_TO_LABEL_IRMAS = {v:k for k,v in LABEL_TO_IDX_IRMAS.items()}
 
-LABEL_TO_IDX_CN = {'guzheng':0, 'suona':1, 'dizi':2, 'gong':3}
-IDX_TO_LABEL_CN = {v:k for k,v in LABEL_TO_IDX_CN.items()}
+# LABEL_TO_IDX_CN = {'guzheng':0, 'suona':1, 'dizi':2, 'gong':3}
+# IDX_TO_LABEL_CN = {v:k for k,v in LABEL_TO_IDX_CN.items()}
 
-def setup_seed(seed: int = 1337):
-    torch.manual_seed(seed); np.random.seed(seed); random.seed(seed)
-
-def pick_device() -> str:
-    if torch.backends.mps.is_available(): return "mps"
-    if torch.cuda.is_available():         return "cuda"
-    return "cpu"
-
-def load_npy(path: str) -> np.ndarray:
-    """Load a cached mel tensor saved by precache scripts."""
-    return np.load(path)
+# def setup_seed(seed: int = 1337):
+#     torch.manual_seed(seed); np.random.seed(seed); random.seed(seed)
 
 def decode_label_bits(bits: str, classes) -> str:
     """Turn a 0/1 multi-hot string into comma-separated class labels."""
@@ -38,4 +26,6 @@ def decode_label_bits(bits: str, classes) -> str:
         clean = clean[:len(classes)]
     labels = [cls for cls, flag in zip(classes, clean) if flag == "1"]
     return ", ".join(labels) if labels else "none"
+
+
 

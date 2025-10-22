@@ -7,9 +7,12 @@ development/
 # Data
 mels/
 IRMAS/
+audio_clips/
 data/mels/irmas/
-data/audio/chinese_instruments/audio_clips/
+data/audio/chinese_instruments/video_clips/guzheng
 
+# Generated files
+data/manifests/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -7,8 +7,17 @@ import pandas as pd
 import torch
 from torch.utils.data import Dataset
 
-from src.utils.utils import CLASSES
-from src.utils.audio_arrays import per_example_zscore
+from src.utils.utils import IRMAS_CLASSES
+
+def per_example_zscore(x: np.ndarray | torch.Tensor, eps: float = 1e-6):
+    if isinstance(x, np.ndarray):
+        mean = x.mean(axis=(1,2), keepdims=True)
+        std  = x.std(axis=(1,2), keepdims=True).clip(min=eps)
+        return (x - mean) / std
+    # torch.Tensor path
+    mean = x.mean(dim=(1,2), keepdim=True)
+    std  = x.std(dim=(1,2), keepdim=True).clamp_min(eps)
+    return (x - mean) / std
 
 @dataclass
 class PathResolver:
@@ -27,7 +36,7 @@ class _BaseMelDataset(Dataset):
             x = per_example_zscore(x)
         return x
 
-class SimpleMelNpyDataset(_BaseMelDataset):
+class SingleClassMelNpyDataset(_BaseMelDataset):
     """Manifest CSV: filepath,label  (single-label)."""
     def __init__(self, manifest_csv: str, label_to_idx: Dict[str,int] | None = None,
                  per_example_norm: bool = True):
@@ -81,7 +90,7 @@ class IRMASTestWindowDataset(_BaseMelDataset):
         mel = torch.from_numpy(self._load_mel(mel_path))
 
         bits = row["label_multi"].strip()
-        positives = [CLASSES[i] for i, ch in enumerate(bits[:len(CLASSES)]) if ch == "1"]
+        positives = [IRMAS_CLASSES[i] for i, ch in enumerate(bits[:len(IRMAS_CLASSES)]) if ch == "1"]
         target = torch.zeros(len(self.class_names), dtype=torch.float32)
         for label in positives:
             idx = self.label_to_idx.get(label)

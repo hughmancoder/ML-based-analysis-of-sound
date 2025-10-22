@@ -5,14 +5,16 @@
 - [x] Convert to spectrograms
 - [x] Extraction script for IRMAS wav from video files . JSON format should read filepath
 - [x] Add to also get data from local directory (windows/mac and it will append it to the manifest csv) (if array is empty take the whole video for the sample)
-- [ ] ~700 samples for each instrument
+- [x] ~700 samples for each instrument
 - [x] Make manifests work for local paths instead of absolute paths
 
 ## Preprocessing
 
 - [x] Summarise dataset labels script
 - [x] Generate mel spectrogram pipeline for IRMAS 
-- [ ] Ensure the train spectrograms are 301 samples wide too
+- [x] Ensure the train spectrograms are 301 samples wide too
+- [x] Confusion matrixx`
+- [ ] Remove one hot encoded labels in favour of a more flexible scheme (have a think about this)
 
 ## Training
 
@@ -30,6 +32,7 @@
 - [x] make test manifest for test windows (each row is a window, with start and end time)
 - [x] Fix test window size (currently 201)
 - [ ] Evaluate on trainset
+- [ ] Improve evaluation on unseen data
 
 - 
 Idea:
