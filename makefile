@@ -23,7 +23,7 @@ IRMAS_TEST_MELS_CSV  := $(MANIFEST_DIR)/irmas_test_mels.csv
 
 # Audio/Mel Parameters
 SR        := 44100
-DUR       := 3.0
+DUR       := 3.0 # 30 millisconds instead
 N_MELS    := 128
 WIN_MS    := 30.0
 HOP_MS    := 10.0

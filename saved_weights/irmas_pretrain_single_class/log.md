@@ -64,3 +64,12 @@ N_MELS    := 128
 WIN_MS    := 30.0
 HOP_MS    := 10.0
 STRIDE_S := 1.5
+
+
+# train_6
+Batch = 128
+L5 = 0.001
+Dropout = 0.3
+
+75%
+
