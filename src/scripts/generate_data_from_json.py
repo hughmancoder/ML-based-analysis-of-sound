@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Generates IRMAS-style WAV clips from a minimal JSON manifest
+Generates IRMAS-congruent dataset clips from a minimal JSON manifest
 """
 
 from __future__ import annotations
@@ -9,15 +9,25 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Dict, Any, Optional
 
-# ---------- Config ----------
-OUT_ROOT   = Path("data/audio/chinese_instruments")
-TMP_DIR    = Path(".cache/video_tmp")
-CANON_DIR  = Path(".cache/canonical")
-REPO_ROOT  = Path(__file__).resolve().parents[2]
-SR         = 44_100
-CHANNELS   = 2
-CLIP_SEC   = 3.0
-STRIDE_SEC = CLIP_SEC
+
+DEFAULT_OUT_ROOT   = Path("data/audio/chinese_instruments/train")
+DEFAULT_TMP_DIR    = Path(".cache/video_tmp")
+DEFAULT_CANON_DIR  = Path(".cache/canonical")
+DEFAULT_REPO_ROOT  = Path(__file__).resolve().parents[2]
+DEFAULT_SR         = 44_100
+DEFAULT_CHANNELS   = 2
+DEFAULT_CLIP_SEC   = 3.0
+DEFAULT_STRIDE_SEC = DEFAULT_CLIP_SEC
+
+
+OUT_ROOT   = DEFAULT_OUT_ROOT
+TMP_DIR    = DEFAULT_TMP_DIR
+CANON_DIR  = DEFAULT_CANON_DIR
+REPO_ROOT  = DEFAULT_REPO_ROOT
+SR         = DEFAULT_SR
+CHANNELS   = DEFAULT_CHANNELS
+CLIP_SEC   = DEFAULT_CLIP_SEC
+STRIDE_SEC = DEFAULT_STRIDE_SEC
 
 # ---------- utils ----------
 def run(cmd: List[str], check=True) -> sp.CompletedProcess:
@@ -159,8 +169,8 @@ def _resolve_local_path(path_str: str, base_dir: Path) -> Path:
 
 def prepare_source(entry: Dict[str, Any], base_dir: Path) -> MediaSource:
     if entry.get("file"):
-         p = _resolve_local_path(entry["file"], base_dir)
-         return MediaSource(url_or_file=str(p), local_path=p)
+        p = _resolve_local_path(entry["file"], base_dir)
+        return MediaSource(url_or_file=str(p), local_path=p)
     url = entry.get("video") or entry.get("url")    
     if not url:
         raise ValueError("Entry needs 'file' or 'video'/'url'.")
@@ -215,6 +225,22 @@ def main() -> None:
     ap = argparse.ArgumentParser(description="Build IRMAS-style files with all labels in filename.")
     ap.add_argument("--input", type=Path, required=True, help="Path to JSON manifest")
     ap.add_argument("--overwrite", action="store_true", help="Overwrite existing files")
+    ap.add_argument("--out-root", type=Path, default=DEFAULT_OUT_ROOT,
+                    help="Directory where labeled clip subfolders are written")
+    ap.add_argument("--tmp-dir", type=Path, default=DEFAULT_TMP_DIR,
+                    help="Scratch directory for temporary downloads")
+    ap.add_argument("--canon-dir", type=Path, default=DEFAULT_CANON_DIR,
+                    help="Directory cache for canonicalized WAVs")
+    ap.add_argument("--repo-root", type=Path, default=DEFAULT_REPO_ROOT,
+                    help="Project root used to resolve relative file paths")
+    ap.add_argument("--sample-rate", type=int, default=DEFAULT_SR,
+                    help="Target sample rate for output clips (Hz)")
+    ap.add_argument("--channels", type=int, default=DEFAULT_CHANNELS,
+                    help="Number of audio channels in output clips")
+    ap.add_argument("--clip-sec", type=float, default=DEFAULT_CLIP_SEC,
+                    help="Length of each output clip in seconds")
+    ap.add_argument("--stride-sec", type=float, default=None,
+                    help="Step between clip start times; defaults to clip length")
     args = ap.parse_args()
 
     if not which("ffmpeg") or not which("ffprobe"):
@@ -222,6 +248,16 @@ def main() -> None:
 
     manifest_path = args.input.expanduser().resolve()
     entries: List[Dict[str, Any]] = json.loads(manifest_path.read_text(encoding="utf-8"))
+
+    global OUT_ROOT, TMP_DIR, CANON_DIR, REPO_ROOT, SR, CHANNELS, CLIP_SEC, STRIDE_SEC
+    OUT_ROOT = args.out_root.expanduser()
+    TMP_DIR = args.tmp_dir.expanduser()
+    CANON_DIR = args.canon_dir.expanduser()
+    REPO_ROOT = args.repo_root.expanduser()
+    SR = args.sample_rate
+    CHANNELS = args.channels
+    CLIP_SEC = args.clip_sec
+    STRIDE_SEC = args.stride_sec if args.stride_sec is not None else CLIP_SEC
     total_created = 0
 
     for entry in entries:

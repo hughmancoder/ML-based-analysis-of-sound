@@ -1,13 +1,15 @@
 from __future__ import annotations
+import sys
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Dict, List, Sequence, Tuple
+
 import numpy as np
 import pandas as pd
 import torch
 from torch.utils.data import Dataset
 
-from src.utils.utils import IRMAS_CLASSES
+from src.classes import IRMAS_CLASSES
 
 def per_example_zscore(x: np.ndarray | torch.Tensor, eps: float = 1e-6):
     if isinstance(x, np.ndarray):
@@ -61,39 +63,89 @@ class SingleClassMelNpyDataset(_BaseMelDataset):
         return x, y
 
 class IRMASTestWindowDataset(_BaseMelDataset):
-    """Multi-label windows; returns (mel, multi_hot, clip_id, path)."""
-    def __init__(self, manifest_csv: Path, project_root: Path, class_names: List[str],
-                 per_example_norm: bool = True):
+    """
+    Multi-label windows; returns (mel, multi_hot, clip_id, path).
+
+    Manifest (new schema) columns:
+      - filepath : path to .npy mel (relative or absolute)
+      - labels   : semicolon-separated names, e.g. "sax;pia" (can be empty "")
+      - filename : original audio filename (optional)
+      - start_ms : optional
+      - dataset  : optional
+    """
+    def __init__(
+        self,
+        manifest_csv: Path,
+        project_root: Path,
+        class_names: List[str],
+        per_example_norm: bool = True,
+        unknown_label_policy: str = "warn",  # "ignore" | "warn" | "error"
+    ):
         super().__init__(per_example_norm)
         self.resolver = PathResolver(project_root)
         self.class_names = list(class_names)
         self.label_to_idx = {label: idx for idx, label in enumerate(self.class_names)}
+        self.unknown_label_policy = unknown_label_policy
 
         df = pd.read_csv(manifest_csv)
-        required = {"filepath", "label_multi"}
+        required = {"filepath", "labels"}
         if not required.issubset(df.columns):
             raise ValueError(f"Manifest must contain columns: {sorted(required)}")
+
+        # Normalize dtypes
         df["filepath"] = df["filepath"].astype(str)
-        df["label_multi"] = df["label_multi"].astype(str)
-        df["clip_id"] = (df["irmas_filename"].astype(str)
-                         if "irmas_filename" in df.columns
-                         else df["filepath"].map(lambda p: Path(p).stem))
+        df["labels"] = df["labels"].fillna("").astype(str)
+
+        # Parse "a;b;c" -> ["a","b","c"]
+        def _parse_labels(s: str) -> list[str]:
+            return [t.strip() for t in s.split(";") if t.strip()]
+
+        df["labels_parsed"] = df["labels"].map(_parse_labels)
+
+        # Derive a stable clip_id
+        if "filename" in df.columns:
+            df["clip_id"] = df["filename"].astype(str).map(lambda s: Path(s).stem)
+        elif "irmas_filename" in df.columns:  # legacy fallback
+            df["clip_id"] = df["irmas_filename"].astype(str).map(lambda s: Path(s).stem)
+        else:
+            def _infer_clip_id(p: str) -> str:
+                stem = Path(p).stem
+                # If your saved mels look like NAME__HASH__TAG.npy, keep NAME
+                return stem.split("__", 1)[0]
+            df["clip_id"] = df["filepath"].map(_infer_clip_id)
+
         self.df = df.reset_index(drop=True)
 
-    def __len__(self): return len(self.df)
+    def __len__(self) -> int:
+        return len(self.df)
+
+    def _encode_multi_hot(self, names: Sequence[str], row_idx: int) -> torch.Tensor:
+        tgt = torch.zeros(len(self.class_names), dtype=torch.float32)
+        unknowns = []
+        for name in names:
+            idx = self.label_to_idx.get(name)
+            if idx is None:
+                unknowns.append(name)
+            else:
+                tgt[idx] = 1.0
+
+        if unknowns:
+            if self.unknown_label_policy == "error":
+                raise KeyError(
+                    f"Unknown label(s) in row {row_idx}: {unknowns} "
+                    f"(allowed: {self.class_names})"
+                )
+            elif self.unknown_label_policy == "warn":
+                print(f"[WARN] Unknown label(s) {unknowns} in row {row_idx}; ignoring.",
+                      file=sys.stderr)
+        return tgt
 
     def __getitem__(self, index):
         row = self.df.iloc[index]
         mel_path = self.resolver.resolve(row["filepath"])
         if not mel_path.exists():
             raise FileNotFoundError(mel_path)
-        mel = torch.from_numpy(self._load_mel(mel_path))
 
-        bits = row["label_multi"].strip()
-        positives = [IRMAS_CLASSES[i] for i, ch in enumerate(bits[:len(IRMAS_CLASSES)]) if ch == "1"]
-        target = torch.zeros(len(self.class_names), dtype=torch.float32)
-        for label in positives:
-            idx = self.label_to_idx.get(label)
-            if idx is not None:
-                target[idx] = 1.0
+        mel = torch.from_numpy(self._load_mel(mel_path))  # (C, F, T)
+        target = self._encode_multi_hot(row["labels_parsed"], index)
         return mel, target, row["clip_id"], str(mel_path)

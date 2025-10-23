@@ -39,6 +39,18 @@ refer to the make file for command lines
 make chinese_all # generates dataset from video files
 ```
 
-## Resources
+## Workflow
 
-[paper respository](https://github.com/dhing1024/cs230-instrument-audio-ai)
+Install IRMAS datasets at following locations
+
+data/audio/IRMAS/IRMAS-TestingData-Part1
+data/audio/IRMAS/IRMAS-TrainingData
+
+Run preprocessing pipeline to generate the dataset
+
+```bash
+make manifests
+make generate_irmas_train_mels
+generate_irmas_test_mels
+```
+
