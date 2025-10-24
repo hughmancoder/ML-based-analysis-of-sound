@@ -322,7 +322,7 @@ def single_class_train_loop(
     weight_decay: float = 1e-4,
     val_frac: float = 0.15,
     dropout: float = 0.5,
-    patience: int = 50,
+    patience: int = float('inf'),
     num_workers: int = 2,
     seed: int = 1337,
     resume_from: Optional[Path] = None,   # e.g., ckpt_dir/"last.pt" or ckpt_dir/"best_val_acc.pt"
@@ -451,7 +451,7 @@ def fine_tune_single_class(
     weight_decay: float = 1e-4,
     val_frac: float = 0.15,
     dropout: float = 0.5,
-    patience: int = 50,
+    patience: int = float('inf'),
     num_workers: int = 2,
     seed: int = 1337,
     save_best_stamped: bool = False,
