@@ -22,12 +22,23 @@
 
 - [x] Setup single instruøment classification CNN
 - [x] Pretrain on IRMAS
-- [ ] Finetune CNN to classify 4 instruments
+- [x] Finetune CNN to classify 4 instruments
 - [ ] try setting parameter collate_fn=pad_collate,     # required for variable-length T for both train and test
 - [ ] Fine tune CNN to multilabel classification
 - [ ] Multiclass Loss: switch to BCEWithLogitsLoss (not CrossEntropy).
 - [ ] Generated mels should go in the data folder not .cache
-  
+
+## CNN architecture improvements
+
+- [ ] Optionally use a time-elongated kernel to capture temporal context:
+
+```python
+    # kernel_size=(3,7) is still odd in both dims; padding is automatic with 'same'
+        self.conv4 = nn.Conv2d(64, 128, kernel_size=(3,7), stride=1, padding='same')
+        self.bn4   = nn.BatchNorm2d(128)
+        self.pool4 = nn.MaxPool2d(2, 2)
+```
+
 ## Testing and Evaluation
 
 - Train is single-label; test is multi-label.
@@ -38,9 +49,7 @@
 - [x] Evaluate on trainset
 - [x] Improve evaluation on unseen data
 
-## Bugs
 
-- [ ] Fix Test single class and improt errors
 
 - 
 Idea:

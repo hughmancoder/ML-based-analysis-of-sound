@@ -33,3 +33,6 @@ patience = 20
 
 Early stopping at epoch 93. Best val acc 0.7592
 Best val acc: 0.759
+
+# train_6
+

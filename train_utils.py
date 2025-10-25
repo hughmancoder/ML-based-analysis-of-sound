@@ -127,7 +127,7 @@ def build_multi_manifest_dataloaders(
     return train_loader, val_loader, label_to_idx
 
 
-def build_model(num_classes: int, dropout: float = 0.5, in_ch: int = 2, device: str = "cpu"):
+def build_model_CNN_Simple(num_classes: int, dropout: float = 0.5, in_ch: int = 2, device: str = "cpu"):
     model = CNNVarTime(in_ch=in_ch, num_classes=num_classes, p_drop=dropout).to(device)
     return model
 
@@ -322,7 +322,7 @@ def single_class_train_loop(
     weight_decay: float = 1e-4,
     val_frac: float = 0.15,
     dropout: float = 0.5,
-    patience: int = 50,
+    patience: int = float('inf'),
     num_workers: int = 2,
     seed: int = 1337,
     resume_from: Optional[Path] = None,   # e.g., ckpt_dir/"last.pt" or ckpt_dir/"best_val_acc.pt"
@@ -342,7 +342,7 @@ def single_class_train_loop(
     # Build model/optim/sched/criterion
     num_classes = len(label_to_idx)
     print("Classes:", label_to_idx)
-    model = build_model(num_classes=num_classes, dropout=dropout, in_ch=2, device=device)
+    model = build_model_CNN_Simple(num_classes=num_classes, dropout=dropout, in_ch=2, device=device)
     optimizer = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=weight_decay)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=epochs)
     criterion = nn.CrossEntropyLoss() # could use softmax
@@ -451,7 +451,7 @@ def fine_tune_single_class(
     weight_decay: float = 1e-4,
     val_frac: float = 0.15,
     dropout: float = 0.5,
-    patience: int = 50,
+    patience: int = float('inf'),
     num_workers: int = 2,
     seed: int = 1337,
     save_best_stamped: bool = False,
@@ -483,7 +483,7 @@ def fine_tune_single_class(
     print("Classes:", label_to_idx)
 
     num_classes = len(label_to_idx)
-    model = build_model(num_classes=num_classes, dropout=dropout, in_ch=2, device=device)
+    model = build_model_CNN_Simple(num_classes=num_classes, dropout=dropout, in_ch=2, device=device)
     optimizer = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=weight_decay)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=epochs)
     criterion = nn.CrossEntropyLoss()
